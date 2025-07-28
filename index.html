@@ -147,7 +147,32 @@
                      <h2>Gerador de Certidão de Tempo de Contribuição (CTC)</h2><h4>Dados do Servidor</h4><div class="form-grid"><label>Nome do Servidor: <input type="text" id="ctc-nomeServidor"></label><label>Matrícula: <input type="text" id="ctc-matricula"></label><label>CPF: <input type="text" id="ctc-cpf"></label><label>RG (com órgão emissor): <input type="text" id="ctc-rg"></label><label>Data de Nascimento: <input type="date" id="ctc-dataNascimento"></label><label>Sexo: <select id="ctc-sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select></label><label>Cargo Efetivo: <input type="text" id="ctc-cargo" placeholder="Ex: Professor de Educação Básica II"></label><label>Lotação (Secretaria): <input type="text" id="ctc-lotacao" placeholder="Ex: Secretaria de Educação"></label><label>Data de Admissão: <input type="date" id="ctc-dataAdmissao"></label><label>Data de Exoneração: <input type="date" id="ctc-dataExoneracao"></label><label>Nº do Processo: <input type="text" id="ctc-processo"></label></div><h4>Períodos de Contribuição</h4><table id="tabela-periodos-ctc"><thead><tr><th style="width: 150px;">Data Início</th><th style="width: 150px;">Data Fim</th><th style="width: 100px;">Tempo Bruto (dias)</th><th style="width: 100px;">Deduções (dias)</th><th style="width: 120px;">Tempo Líquido (dias)</th><th>Fonte / Observação</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-periodos-ctc"></tbody></table><button type="button" onclick="adicionarLinhaPeriodoCTC()">+ Adicionar Período</button><h4 id="total-tempo-ctc" style="text-align: right; border-top: 2px solid var(--primary-color); padding-top: 10px; margin-top:20px;">Total: 0 dias</h4><div class="wizard-nav"><button class="secondary" onclick="voltarDashboard()">Voltar ao Painel</button><button onclick="salvarCTC()" class="secondary">💾 Salvar CTC</button><button class="success" onclick="gerarDocumentoCTC(this)"><span class="button-text">🏛️ Gerar Documento CTC</span><span class="spinner"></span></button></div>
                 </div>
 
-                <div id="telaLegislacao" style="display:none;">
+<div id="telaUsuarios" style="display: none;">
+  <h2>Gerenciar Usuários</h2>
+  <form onsubmit="cadastrarUsuario(event)">
+    <div class="form-grid">
+      <label>Nome de Usuário:
+        <input type="text" id="novoUsuarioNome" placeholder="Ex: jose" required />
+      </label>
+      <label>Senha:
+        <input type="password" id="novoUsuarioSenha" placeholder="Senha do usuário" required />
+      </label>
+    </div>
+    <button type="submit" class="success">+ Cadastrar Usuário</button>
+  </form>
+
+  <h3>Usuários Cadastrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Usuário</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="corpo-tabela-usuarios"></tbody>
+  </table>
+</div>
+        <div id="telaLegislacao" style="display:none;">
                      <h2><i class="ri-book-open-fill"></i> Legislação Aplicável ao RPPS</h2>
                      <h3>📄 Leis Federais</h3>
                      <div class="dashboard-grid">
