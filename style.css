@@ -257,6 +257,27 @@ body.dark-mode .user-info {
 .user-info b {
     font-weight: 500;
 }
+/* Adicione isso ao seu CSS */
+.login-logo {
+  width: 100px; /* ou o tamanho que preferir */
+  height: 100px;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+#telaLogin {
+  /* Fundo gradiente sutil */
+  background: linear-gradient(245deg, #eef2f8, #f8fafc);
+}
+
+body.dark-mode #telaLogin {
+    background: linear-gradient(245deg, #0f172a, #1a2742);
+}
+
+.login-branding {
+  /* Usa o novo gradiente da sidebar */
+  background: var(--sidebar-fundo);
+}
 
 
 
