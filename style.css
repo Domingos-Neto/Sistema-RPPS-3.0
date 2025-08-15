@@ -579,3 +579,10 @@ body.dark-mode .dashboard-card i {
     #printableArea, #printableArea * { visibility: visible; }
     #printableArea { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
 }
+.branding-logo {
+  width: 150px; /* Ajuste o tamanho conforme necessário */
+  margin-bottom: 15px; /* Espaçamento entre a logo e o texto */
+  display: block; /* Para centralizar com margin auto se precisar */
+  margin-left: auto;
+  margin-right: auto;
+}
