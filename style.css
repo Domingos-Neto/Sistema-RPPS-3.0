@@ -1,6 +1,11 @@
 /* ============================================= */
 /* NOVA PALETA DE CORES - PREVTECH               */
 /* ============================================= */
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', sans-serif; /* Nova fonte */
+  transition: all .2s ease-in-out;
+}
 :root {
   /* Cores da Marca PREVTECH */
   --primary-color: #0d2a6c; /* Azul escuro da logo */
@@ -250,6 +255,7 @@ body.dark-mode .user-info {
 .user-info b {
     font-weight: 500;
 }
+
 
 
 
