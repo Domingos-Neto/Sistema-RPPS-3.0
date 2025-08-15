@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
@@ -21,16 +21,13 @@
   <div class="login-container">
     <div class="login-branding">
       <div class="branding-content">
-        <div class="login-form" id="login-form-container">
-  <img src="Logo PrevTech arredondada.jpg" alt="Logo PrevTech" class="login-logo">
-  <h2>Acesse sua Conta</h2>
-  ...
-</div>
-        <h2>PREVTECH</h2>
+        <h2>ITAPREV</h2>
         <p>Sistema de Gestão do Regime Próprio de Previdência Social.</p>
       </div>
     </div>
     <div class="login-form" id="login-form-container">
+      <img src="Logo PrevTech arredondada.jpg" alt="Logo PrevTech" class="login-logo">
+      
       <h2>Acesse sua Conta</h2>
       <p>Bem-vindo(a) de volta! Use sua conta Google autorizada para acessar.</p>
       
@@ -104,16 +101,16 @@
                     </div>
                     
                     <div class="dashboard-grid">
-                        <div class="dashboard-card" onclick="handleNavClick(event, 'simulacao')"><i class="ri-add-circle-line" style="color: #0d47a1;"></i><span>Nova Simulação de Benefício</span></div>
-                        <div class="dashboard-card" onclick="handleNavClick(event, 'geradorCTC')"><i class="ri-file-text-line" style="color: #17a2b8;"></i><span>Gerar Certidão (CTC)</span></div>
-                        <div class="dashboard-card" onclick="handleNavClick(event, 'telaLegislacao')"><i class="ri-book-open-line" style="color: #6f42c1;"></i><span>Acessar Legislação</span></div>
+                        <div class="dashboard-card" onclick="handleNavClick(event, 'simulacao')"><i class="ri-add-circle-line"></i><span>Nova Simulação de Benefício</span></div>
+                        <div class="dashboard-card" onclick="handleNavClick(event, 'geradorCTC')"><i class="ri-file-text-line"></i><span>Gerar Certidão (CTC)</span></div>
+                        <div class="dashboard-card" onclick="handleNavClick(event, 'telaLegislacao')"><i class="ri-book-open-line"></i><span>Acessar Legislação</span></div>
                         
                         <div class="dashboard-card" style="text-align: left; align-items: flex-start; cursor: default;">
                             <h4 style="margin-top:0; display:flex; align-items:center; gap:8px; border:none; font-size: 1.1em;">
-                                <i class="ri-time-line" style="font-size: 1.5rem; margin-bottom:0; color: #dc3545;"></i>
-                                <span style="color: var(--text-color);">Calculadora de Tempo</span>
+                                <i class="ri-time-line" style="font-size: 1.5rem; margin-bottom:0;"></i>
+                                <span style="color: var(--cor-texto);">Calculadora de Tempo</span>
                             </h4>
-                            <p style="font-size:0.9em; margin-top: 5px; margin-bottom:15px; color: var(--text-secondary-color);">Calcule o tempo entre duas datas.</p>
+                            <p style="font-size:0.9em; margin-top: 5px; margin-bottom:15px; color: var(--cor-texto-secundario);">Calcule o tempo entre duas datas.</p>
                             <div style="width:100%; display:grid; gap:10px;">
                                 <label style="font-size:0.9em;">Data Início: <input type="date" id="calc-data-inicio" style="padding:8px;"></label>
                                 <label style="font-size:0.9em;">Data Fim: <input type="date" id="calc-data-fim" style="padding:8px;"></label>
@@ -122,12 +119,12 @@
                                     <button id="btn-calcular-tempo" class="danger" style="margin-top:0;">Calcular</button>
                                 </div>
                             </div>
-                            <div id="resultado-calculo-tempo" style="margin-top:15px; background: var(--secondary-color); padding:10px; border-radius:6px; width:100%; min-height:75px; font-size: 0.9em;"></div>
+                            <div id="resultado-calculo-tempo" style="margin-top:15px; background: var(--cor-fundo); padding:10px; border-radius:6px; width:100%; min-height:75px; font-size: 0.9em;"></div>
                         </div>
 
                         <div class="dashboard-card" style="grid-column: 1 / -1; align-items: flex-start; text-align: left;">
                             <h4 style="margin-top:0; display:flex; align-items:center; gap:8px; border:none; font-size: 1.1em;">
-                                <i class="ri-pie-chart-2-line" style="font-size: 1.5rem; margin-bottom:0; color: #28a745;"></i>
+                                <i class="ri-pie-chart-2-line" style="font-size: 1.5rem; margin-bottom:0;"></i>
                                 <span>Distribuição de Tipos de Benefícios</span>
                             </h4>
                             <div style="width: 100%; height: 280px; position: relative;">
@@ -180,7 +177,7 @@
                             <label>Data de Nascimento: <input type="date" id="dataNascimento" /></label>
                             <label>Sexo: <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select></label>
                             <label>Tempo de Contribuição Externo (dias): <input type="number" id="tempoExterno" value="0" min="0" /></label>
-                            <label><div class="tooltip-container">Tempo Especial Convertido (dias):<span class="tooltip">?<span class="tooltiptext">Informe o tempo de atividade especial já convertido em tempo comum. Ex: 10 anos de atividade especial de um homem (fator 1.4) se convertem em 14 anos de tempo comum (5110 dias), ou seja, 4 anos (1460 dias) a mais a serem informados aqui.</span></span></div><input type="number" id="tempoEspecial" value="0" min="0" /></label>
+                            <label><div class="tooltip-container">Tempo Especial Convertido (dias):<span class="tooltip">?<span class="tooltiptext">Informe o tempo de atividade especial já convertido em tempo comum. Ex: 10 anos de atividade especial de um homem (fator 1.4) se convertem em 14 anos de tempo comum (5110 dias), ou seja, 4 anos (1460 dias) a serem informados aqui.</span></span></div><input type="number" id="tempoEspecial" value="0" min="0" /></label>
                         </div>
                         <div id="camposAtoAposentadoria" style="display:none;"><h4>Informações para o Ato de Aposentadoria</h4><div class="form-grid"><label>Nº do Processo Administrativo: <input type="text" id="processoAposentadoria" /></label><label>Nº do Ato de Aposentadoria: <input type="number" id="atoNumeroAposentadoria" /></label></div><label>Fundamento Legal (para o Ato de Aposentadoria):<textarea id="fundamentoLegalPersonalizado"></textarea></label></div>
                         <div id="camposAtoPensao" style="display:none;"><h4>Informações para o Ato de Pensão</h4><div class="form-grid"><label>Nome do Pensionista Principal (Beneficiário): <input type="text" id="nomePensionista" /></label><label>Relação de Parentesco (do Principal): <input type="text"id="relacaoPensionista" /></label><label>Data do Óbito do Servidor: <input type="date" id="dataObito" /></label><label>Nº do Processo Administrativo: <input type="text" id="processoAdministrativo" /></label><label>Nº do Ato de Pensão: <input type="number" id="atoNumero" /></label></div></div>
@@ -203,7 +200,7 @@
                         <label>Data de Admissão: <input type="date" id="ctc-dataAdmissao"></label>
                         <label>Data de Exoneração: <input type="date" id="ctc-dataExoneracao"></label>
                         <label>Nº do Processo: <input type="text" id="ctc-processo"></label>
-                    </div><h4>Períodos de Contribuição</h4><table id="tabela-periodos-ctc"><thead><tr><th style="width: 150px;">Data Início</th><th style="width: 150px;">Data Fim</th><th style="width: 100px;">Tempo Bruto (dias)</th><th style="width: 100px;">Deduções (dias)</th><th style="width: 120px;">Tempo Líquido (dias)</th><th>Fonte / Observação</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-periodos-ctc"></tbody></table><button type="button" onclick="adicionarLinhaPeriodoCTC()">+ Adicionar Período</button><h4 id="total-tempo-ctc" style="text-align: right; border-top: 2px solid var(--primary-color); padding-top: 10px; margin-top:20px;">Total: 0 dias</h4><div class="wizard-nav"><button class="secondary" onclick="handleNavClick(event, 'dashboard')">Voltar ao Painel</button><button onclick="salvarCTC()" class="secondary">💾 Salvar CTC</button><button class="success" onclick="gerarDocumentoCTC(this)"><span class="button-text">🏛️ Gerar Documento CTC</span><span class="spinner"></span></button></div>
+                    </div><h4>Períodos de Contribuição</h4><table id="tabela-periodos-ctc"><thead><tr><th style="width: 150px;">Data Início</th><th style="width: 150px;">Data Fim</th><th style="width: 100px;">Tempo Bruto (dias)</th><th style="width: 100px;">Deduções (dias)</th><th style="width: 120px;">Tempo Líquido (dias)</th><th>Fonte / Observação</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-periodos-ctc"></tbody></table><button type="button" onclick="adicionarLinhaPeriodoCTC()">+ Adicionar Período</button><h4 id="total-tempo-ctc" style="text-align: right; border-top: 2px solid var(--prevtech-azul-escuro); padding-top: 10px; margin-top:20px;">Total: 0 dias</h4><div class="wizard-nav"><button class="secondary" onclick="handleNavClick(event, 'dashboard')">Voltar ao Painel</button><button onclick="salvarCTC()" class="secondary">💾 Salvar CTC</button><button class="success" onclick="gerarDocumentoCTC(this)"><span class="button-text">🏛️ Gerar Documento CTC</span><span class="spinner"></span></button></div>
                 </div>
 
                 <div id="telaLegislacao" style="display:none;">
@@ -271,6 +268,3 @@
 
 </body>
 </html>
-
-
-
