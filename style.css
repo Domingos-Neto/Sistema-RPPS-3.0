@@ -1,55 +1,57 @@
 /* ============================================= */
 /* NOVA PALETA DE CORES - PREVTECH               */
 /* ============================================= */
-* {
+*{
   box-sizing: border-box;
   font-family: 'Inter', 'Segoe UI', sans-serif; /* Nova fonte */
   transition: all .2s ease-in-out;
 }
+/* ============================================= */
+/* NOVA PALETA DE CORES - ALINHADA À LOGO PREVTECH */
+/* ============================================= */
 :root {
   /* Cores da Marca PREVTECH */
-  --primary-color: #0d2a6c; /* Azul escuro da logo */
-  --primary-light: #1e3a8a; /* Tom mais claro do azul */
-  --primary-dark: #071a4b;   /* Tom mais escuro para hover */
-  --accent-color: #f97316;  /* Laranja vibrante da logo */
-  --accent-hover: #ea580c;  /* Laranja mais escuro para hover */
+  --prevtech-azul-escuro: #0a2559;   /* Extraído da logo */
+  --prevtech-laranja: #ff6f00;       /* Extraído da logo (tom mais vibrante) */
+  --prevtech-laranja-hover: #e66000;
 
-  /* Cores Neutras e de UI */
-  --background-color: #f8fafc; /* Fundo principal (quase branco) */
-  --surface-color: #ffffff;    /* Cor dos cards e inputs */
-  --border-color: #e2e8f0;     /* Cor das bordas (bem sutil) */
-  --text-color: #334155;        /* Cor do texto principal */
-  --text-secondary-color: #64748b; /* Cor de textos secundários */
+  /* Cores Neutras e de UI (Tema Claro) */
+  --cor-fundo: #f8fafc;              /* Fundo principal (branco gelo) */
+  --cor-superficie: #ffffff;         /* Cor dos cards e inputs */
+  --cor-borda: #e2e8f0;              /* Cor das bordas (bem sutil) */
+  --cor-texto: #0f172a;               /* Cor do texto principal (azul bem escuro) */
+  --cor-texto-secundario: #64748b;    /* Cor de textos secundários */
 
   /* Cores de Feedback */
-  --success-color: #16a34a;
-  --danger-color: #dc2626;
+  --cor-sucesso: #16a34a;
+  --cor-erro: #dc2626;
   
   /* Cores da Sidebar */
-  --sidebar-bg: var(--primary-color);
-  --sidebar-text: #e2e8f0;
-  --sidebar-active-bg: rgba(255, 255, 255, 0.05);
-  --sidebar-active-text: var(--accent-color);
-  --whatsapp-color: #25D366;
+  --sidebar-fundo: linear-gradient(180deg, var(--prevtech-azul-escuro) 0%, #081e48 100%);
+  --sidebar-texto: #e0e7ff;
+  --sidebar-fundo-ativo: rgba(255, 255, 255, 0.05);
+  --sidebar-texto-ativo: var(--prevtech-laranja);
+  --whatsapp-cor: #25D366;
 }
 
 body.dark-mode {
-  --primary-color: #1e3a8a;
-  --primary-light: #2563eb;
-  --primary-dark: #0d2a6c;
-  --accent-color: #f97316;
-  --accent-hover: #fb923c;
+  /* Cores da Marca PREVTECH (podem ser ajustadas para melhor contraste) */
+  --prevtech-azul-escuro: #1e3a8a;
+  --prevtech-laranja: #f97316;
+  --prevtech-laranja-hover: #fb923c;
 
-  --background-color: #111827;
-  --surface-color: #1f2937;
-  --border-color: #374151;
-  --text-color: #f9fafb;
-  --text-secondary-color: #9ca3af;
+  /* Cores Neutras e de UI (Tema Escuro) */
+  --cor-fundo: #0f172a;               /* Fundo azul noite */
+  --cor-superficie: #1e293b;         /* Superfície azul ardósia */
+  --cor-borda: #334155;               /* Borda mais visível */
+  --cor-texto: #f1f5f9;               /* Texto branco gelo */
+  --cor-texto-secundario: #94a3b8;    /* Texto secundário mais claro */
   
-  --sidebar-bg: #1f2937;
-  --sidebar-text: #d1d5db;
-  --sidebar-active-bg: rgba(251, 146, 60, 0.1);
-  --sidebar-active-text: var(--accent-color);
+  /* Cores da Sidebar (Tema Escuro) */
+  --sidebar-fundo: #1e293b;
+  --sidebar-texto: #cbd5e1;
+  --sidebar-fundo-ativo: rgba(249, 115, 22, 0.1);
+  --sidebar-texto-ativo: var(--prevtech-laranja);
 }
 
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif;transition:all .2s ease-in-out;}
@@ -255,6 +257,7 @@ body.dark-mode .user-info {
 .user-info b {
     font-weight: 500;
 }
+
 
 
 
