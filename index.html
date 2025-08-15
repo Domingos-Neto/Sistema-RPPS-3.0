@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>ITAPREV - Sistema de Gestão Previdenciária v3.5 (Revisado)</title>
+<title>PREVTECH - Sistema de Gestão Previdenciária v3.5</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -205,37 +205,52 @@
 
                 <div id="telaLegislacao" style="display:none;">
                     <h2><i class="ri-book-open-fill"></i> Legislação Aplicável ao RPPS</h2>
-                    <p> ... </p>
+                    <p>Este módulo ainda está em desenvolvimento.</p>
                 </div>
 
                 <div id="telaConfiguracoes" style="display:none;">
                     <h2><i class="ri-settings-3-fill"></i> Configurações do Sistema</h2>
-                    <p> ... </p>
+                    <p>Preencha os campos abaixo com as informações que serão utilizadas na geração de documentos oficiais.</p>
+                    <div class="form-grid">
+                        <label>Nome do Prefeito(a):
+                            <input type="text" id="config-nome-prefeito" placeholder="Digite o nome completo do prefeito(a)">
+                        </label>
+                        <label>Nome do Presidente(a) do ITAPREV:
+                            <input type="text" id="config-nome-presidente" placeholder="Digite o nome completo do presidente(a)">
+                        </label>
+                    </div>
+                    <div class="wizard-nav" style="justify-content: flex-end; margin-top: 20px;">
+                        <button onclick="salvarConfiguracoes(this)">
+                            <span class="button-text">Salvar Configurações</span>
+                            <span class="spinner"></span>
+                        </button>
+                    </div>
                 </div>
+
 
                 <div id="telaCadastro" style="display:none;">
                     <h2><i class="ri-user-settings-fill"></i> Módulo de Gestão Cadastral</h2>
-                    <p> ... </p>
+                    <p>Este módulo ainda está em desenvolvimento.</p>
                 </div>
                 
                 <div id="telaProcessos" style="display:none;">
                     <h2><i class="ri-node-tree"></i> Módulo de Acompanhamento de Processos</h2>
-                    <p> ... </p>
+                    <p>Este módulo ainda está em desenvolvimento.</p>
                 </div>
 
                 <div id="telaFinanceiro" style="display:none;">
                     <h2><i class="ri-line-chart-fill"></i> Módulo Financeiro e Contribuições</h2>
-                    <p> ... </p>
+                    <p>Este módulo ainda está em desenvolvimento.</p>
                 </div>
 
                 <div id="telaRelatorios" style="display:none;">
                     <h2><i class="ri-file-chart-fill"></i> Módulo de Relatórios e BI</h2>
-                    <p> ... </p>
+                    <p>Este módulo ainda está em desenvolvimento.</p>
                 </div>
                 
                 <div id="telaUsuarios" style="display:none;">
                     <h2><i class="ri-shield-user-fill"></i> Gerenciamento de Usuários</h2>
-                    <p> ... </p>
+                    <p>Este módulo ainda está em desenvolvimento.</p>
                 </div>
 
                 <input type="file" id="arquivoExcel" accept=".xlsx, .xls" style="display:none;" onchange="importarExcel()" />
@@ -244,7 +259,7 @@
             </div> 
             <footer>
                 <p>ITAPREV - Sistema de Gestão Previdenciária. Itapipoca-CE, 2025.</p>
-                <p><small>Desenvolvedor: Domingos Barroso Neto v3.1</small></p>
+                <p><small>Desenvolvedor: Domingos Barroso Neto v3.5</small></p>
             </footer>
         </div>
 
@@ -268,5 +283,3 @@
 
 </body>
 </html>
-
-
