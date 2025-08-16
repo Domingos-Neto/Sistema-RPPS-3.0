@@ -793,8 +793,10 @@ function calcularBeneficio(n = true, b = null) {
             rD.innerHTML = `<h3>Resultado do Cálculo (Bruto)</h3><p><b>Tipo:</b> ${AppState.simulacaoResultados.tipo}</p>${m>0?`<p><b>Média Salarial de Contribuição:</b> ${formatarDinheiro(AppState.simulacaoResultados.mediaSalarial)}</p>`:''}<p><b>Fundamento do Cálculo:</b> ${AppState.simulacaoResultados.descricao}</p><p style="font-size:1.2em;font-weight:bold;">💰 Valor Bruto do Benefício: ${formatarDinheiro(AppState.simulacaoResultados.valorBeneficioFinal)}</p>`;
             calculateValorLiquido(vB);
 
-            document.getElementById('containerAtoAposentadoriaBtn').style.display = isA ? 'block' : 'none';
-            document.getElementById('containerAtoPensaoBtn').style.display = isP ? 'block' : 'none';
+            // ##### INÍCIO DA ALTERAÇÃO #####
+            document.getElementById('btnGerarAtoAposentadoria').style.display = isA ? 'inline-flex' : 'none';
+            document.getElementById('btnGerarAtoPensao').style.display = isP ? 'inline-flex' : 'none';
+            // ##### FIM DA ALTERAÇÃO #####
 
             if (s.length > 0) desenharGrafico(s, m);
 
