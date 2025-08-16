@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>PREVTECH - Sistema de Gestão Previdenciária v3.5 (Revisado)</title>
+<title>PREVTECH - Sistema de Gestão Previdenciária v4.1 (Revisado)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -194,7 +194,48 @@
                         <div class="wizard-nav"><button class="secondary" onclick="handleNavClick(event, 'dashboard')">Voltar ao Painel</button><button class="primary" onclick="irParaPasso(2)">Próximo Passo ❯</button></div>
                     </div>
                     <div id="passo2" class="wizard-step" style="display:none;"><h2 class="accordion-toggle">Passo 2: Salários de Contribuição (para Média)</h2><div class="accordion-content"><div class="tabela-container"><table id="tabela-salarios"><thead><tr><th>Nº</th><th>MÊS/ANO</th><th>FATOR</th><th>SALÁRIO (R$)</th><th>SALÁRIO ATUALIZADO (R$)</th><th>Ações</th></tr></thead><tbody id="corpo-tabela"></tbody></table></div><div class="grupos-botoes" style="display: flex; gap: 20px; flex-wrap: wrap;"><div class="grupo"><h4>Ações da Tabela</h4><button class="primary" onclick="adicionarLinha()"><span class="button-text">+ Adicionar Linha</span></button><button class="danger" onclick="limparTabela()">Limpar Tabela</button></div><div class="grupo"><h4>Importar/Exportar Dados</h4><button class="secondary" onclick="exportarExcel(this)">📥 Exportar para Excel</button><button class="secondary" onclick="document.getElementById('arquivoExcel').click()">📥 Importar do Excel</button></div></div></div><div class="wizard-nav"><button class="secondary" onclick="irParaPasso(1)">❮ Passo Anterior</button><button class="primary" onclick="calcularBeneficio(true, this)"><span class="button-text">Calcular e Ver Resultado ❯</span><span class="spinner"></span></button></div></div>
-                    <div id="passo3" class="wizard-step" style="display:none;"><h2>Passo 3: Resultado e Geração de Documentos</h2><div id="resultado"></div><div id="resultadoLiquido"></div><div id="resultadoProjecao"></div><div id="resultadoAbono"></div><div id="containerDetalhamentoProventos" style="display:none;"><h4>Detalhamento dos Proventos para o Ato</h4><table id="tabela-proventos-ato"><thead><tr><th>DESCRIÇÃO</th><th>VALOR (R$)</th><th>Ações</th></tr></thead><tbody id="corpo-tabela-proventos-ato"></tbody><tfoot><tr style="font-weight: bold;"><td>TOTAL DOS PROVENTOS</td><td id="total-proventos-ato">R$ 0,00</td><td></td></tr></tfoot></table><button class="primary" onclick="adicionarLinhaProvento()">+ Adicionar Linha de Provento</button></div><canvas id="graficoSalarios"></canvas><h4>Ações Finais</h4><div class="form-grid"><div class="grupo-horizontal" style="display:flex; gap: 10px;"><input type="text" id="nomeSimulacao" placeholder="Nome da simulação p/ salvar" /><button class="primary" onclick="salvarSimulacaoHistorico()">🕘 Salvar no Histórico</button></div><div class="grupo-horizontal" style="display:flex; gap: 10px;"><button class="secondary" onclick="imprimirSimulacao()">🖨️ Imprimir Relatório</button><button class="primary" onclick="exportarTudoZIP(this)">📦 Exportar ZIP</button></div></div><div id="containerAtoAposentadoriaBtn" style="display:none; margin-top: 20px;"><button class="success" onclick="gerarAtoDeAposentadoria(this)"><span class="button-text">🏛️ Gerar Ato de Aposentadoria</span><span class="spinner"></span></button></div><div id="containerAtoPensaoBtn" style="display:none; margin-top: 20px;"><button class="success" onclick="gerarAtoDePensao(this)"><span class="button-text">🏛️ Gerar Ato de Pensão</span><span class="spinner"></span></button></div><div class="wizard-nav"><button class="secondary" onclick="irParaPasso(2)">❮ Voltar e Ajustar Salários</button><button class="primary" onclick="handleNavClick(event, 'dashboard')">Finalizar e Voltar ao Painel</button></div></div>
+                    <div id="passo3" class="wizard-step" style="display:none;">
+                        <h2>Passo 3: Resultado e Geração de Documentos</h2>
+                        <div id="resultado"></div>
+                        <div id="resultadoLiquido"></div>
+                        <div id="resultadoProjecao"></div>
+                        <div id="resultadoAbono"></div>
+                        <div id="containerDetalhamentoProventos" style="display:none;">
+                            <h4>Detalhamento dos Proventos para o Ato</h4>
+                            <table id="tabela-proventos-ato">
+                                <thead><tr><th>DESCRIÇÃO</th><th>VALOR (R$)</th><th>Ações</th></tr></thead>
+                                <tbody id="corpo-tabela-proventos-ato"></tbody>
+                                <tfoot><tr style="font-weight: bold;"><td>TOTAL DOS PROVENTOS</td><td id="total-proventos-ato">R$ 0,00</td><td></td></tr></tfoot>
+                            </table>
+                            <button class="primary" onclick="adicionarLinhaProvento()">+ Adicionar Linha de Provento</button>
+                        </div>
+                        <canvas id="graficoSalarios"></canvas>
+                        
+                        <h4>Ações Finais</h4>
+                        <div class="form-grid">
+                            <div class="grupo-horizontal" style="display:flex; gap: 10px;">
+                                <input type="text" id="nomeSimulacao" placeholder="Nome da simulação p/ salvar" />
+                                <button class="primary" onclick="salvarSimulacaoHistorico()">🕘 Salvar no Histórico</button>
+                            </div>
+                            <div class="grupo-horizontal" style="display:flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                                <button class="secondary" onclick="imprimirSimulacao()">🖨️ Imprimir Relatório</button>
+                                <button class="primary" onclick="exportarTudoZIP(this)">📦 Exportar ZIP</button>
+                                
+                                <button id="btnGerarAtoAposentadoria" class="success" onclick="gerarAtoDeAposentadoria(this)" style="display:none;">
+                                    <span class="button-text">🏛️ Gerar Ato de Aposentadoria</span>
+                                    <span class="spinner"></span>
+                                </button>
+                                <button id="btnGerarAtoPensao" class="success" onclick="gerarAtoDePensao(this)" style="display:none;">
+                                    <span class="button-text">🏛️ Gerar Ato de Pensão</span>
+                                    <span class="spinner"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="wizard-nav">
+                            <button class="secondary" onclick="irParaPasso(2)">❮ Voltar e Ajustar Salários</button>
+                            <button class="primary" onclick="handleNavClick(event, 'dashboard')">Finalizar e Voltar ao Painel</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="geradorCTC" style="display:none;">
@@ -265,7 +306,7 @@
             </div> 
             <footer>
                 <p>ITAPREV - Sistema de Gestão Previdenciária. Itapipoca-CE, 2025.</p>
-                <p><small>Desenvolvido por PREVTECH - Soluções em Sistemas Previdenciários v4.0</small></p>
+                <p><small>Desenvolvido por PREVTECH - Soluções em Sistemas Previdenciários v4.1</small></p>
             </footer>
         </div>
 
