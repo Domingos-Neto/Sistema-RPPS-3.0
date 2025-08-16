@@ -576,6 +576,40 @@ body.dark-mode .dashboard-card i {
 }
 
 /* ============================================= */
+/* LAYOUT DAS AÇÕES FINAIS (PASSO 3)             */
+/* ============================================= */
+.acoes-finais-container {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.grupo-salvar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.grupo-salvar input {
+  flex-grow: 1;
+  margin-top: 0;
+}
+.grupo-salvar button {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.grupo-acoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.grupo-acoes button {
+  margin-top: 0;
+}
+
+
+/* ============================================= */
 /* PRINT STYLES                                  */
 /* ============================================= */
 @media print {
