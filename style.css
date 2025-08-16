@@ -433,11 +433,11 @@ button:hover:not(:disabled) {
 }
 
 /* Botão Primário (Laranja) */
-button {
+button.primary {
   background-color: var(--prevtech-laranja);
   color: #fff;
 }
-button:hover:not(:disabled) {
+button.primary:hover:not(:disabled) {
   background-color: var(--prevtech-laranja-hover);
   box-shadow: 0 4px 15px rgba(255, 111, 0, 0.2);
 }
@@ -463,6 +463,15 @@ button.success { background-color: var(--cor-sucesso); color: #fff; }
 button.success:hover:not(:disabled) { background-color: #15803d; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.2); }
 
 button:disabled { background-color: #9ca3af; border-color: #9ca3af; cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: none; }
+
+/* Botão pequeno para uso em tabelas */
+.btn-tabela {
+  padding: 6px 10px;
+  font-size: 13px;
+  margin: 0;
+  line-height: 1;
+}
+
 .wizard-nav{display:flex;justify-content:space-between;margin-top:20px}
 
 
