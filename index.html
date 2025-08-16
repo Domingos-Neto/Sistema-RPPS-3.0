@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>PREVTECH - Sistema de Gestão Previdenciária v4.1 (Revisado)</title>
+<title>PREVTECH - Sistema de Gestão Previdenciária v4.2 (Revisado)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -212,25 +212,25 @@
                         <canvas id="graficoSalarios"></canvas>
                         
                         <h4>Ações Finais</h4>
-                        <div class="form-grid">
-                            <div class="grupo-horizontal" style="display:flex; gap: 10px;">
+                        <div class="acoes-finais-container">
+                            <div class="grupo-salvar">
                                 <input type="text" id="nomeSimulacao" placeholder="Nome da simulação p/ salvar" />
                                 <button class="primary" onclick="salvarSimulacaoHistorico()">🕘 Salvar no Histórico</button>
                             </div>
-                            <div class="grupo-horizontal" style="display:flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                            <div class="grupo-acoes">
                                 <button class="secondary" onclick="imprimirSimulacao()">🖨️ Imprimir Relatório</button>
                                 <button class="primary" onclick="exportarTudoZIP(this)">📦 Exportar ZIP</button>
-                                
-                                <button id="btnGerarAtoAposentadoria" class="success" onclick="gerarAtoDeAposentadoria(this)" style="display:none;">
+                                <button id="btnGerarAtoAposentadoria" class="success" onclick="gerarAtoDeAposentadoria(this)" style="display: none;">
                                     <span class="button-text">🏛️ Gerar Ato de Aposentadoria</span>
                                     <span class="spinner"></span>
                                 </button>
-                                <button id="btnGerarAtoPensao" class="success" onclick="gerarAtoDePensao(this)" style="display:none;">
+                                <button id="btnGerarAtoPensao" class="success" onclick="gerarAtoDePensao(this)" style="display: none;">
                                     <span class="button-text">🏛️ Gerar Ato de Pensão</span>
                                     <span class="spinner"></span>
                                 </button>
                             </div>
                         </div>
+
                         <div class="wizard-nav">
                             <button class="secondary" onclick="irParaPasso(2)">❮ Voltar e Ajustar Salários</button>
                             <button class="primary" onclick="handleNavClick(event, 'dashboard')">Finalizar e Voltar ao Painel</button>
@@ -306,7 +306,7 @@
             </div> 
             <footer>
                 <p>ITAPREV - Sistema de Gestão Previdenciária. Itapipoca-CE, 2025.</p>
-                <p><small>Desenvolvido por PREVTECH - Soluções em Sistemas Previdenciários v4.1</small></p>
+                <p><small>Desenvolvido por PREVTECH - Soluções em Sistemas Previdenciários v4.2</small></p>
             </footer>
         </div>
 
