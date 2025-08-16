@@ -634,7 +634,33 @@ function calcularMediaSalarial() {
     return { media: med, salarios: sM };
 }
 
+// =================================================================================
+// CÓDIGO NOVO: FUNÇÃO PARA CALCULAR MÉDIA DOS 80% MAIORES SALÁRIOS (REGRA ANTIGA)
+// =================================================================================
+function calcularMedia80Maiores(salarios) {
+    if (!salarios || salarios.length === 0) {
+        return 0;
+    }
 
+    // Extrai apenas os valores dos salários e os ordena do maior para o menor
+    const valoresOrdenados = salarios.map(s => s.value).sort((a, b) => b - a);
+    
+    // Calcula quantos salários correspondem a 80% do total
+    const quantidade80p = Math.ceil(valoresOrdenados.length * 0.8);
+    
+    // Pega apenas os 80% maiores salários
+    const maioresSalarios = valoresOrdenados.slice(0, quantidade80p);
+    
+    // Calcula a média aritmética simples desses salários
+    const somaMaioresSalarios = maioresSalarios.reduce((acc, val) => acc + val, 0);
+    
+    return somaMaioresSalarios / maioresSalarios.length;
+}
+
+
+// =================================================================================
+// CÓDIGO MODIFICADO: FUNÇÃO DE CÁLCULO DE BENEFÍCIO
+// =================================================================================
 function calcularBeneficio(n = true, b = null) {
     const t = document.getElementById('tipoBeneficio').value;
     if ((t === 'voluntaria' || t === 'incapacidade' || t === 'compulsoria') && (!document.getElementById('dataNascimento').value || !document.getElementById('dataAdmissao').value)) {
@@ -674,16 +700,50 @@ function calcularBeneficio(n = true, b = null) {
 
                 } else if (t === 'incapacidade') {
                     const isGrave = document.getElementById('incapacidadeGrave').value === 'sim';
+                    const dataInicioIncapacidadeInput = document.getElementById('dataInicioIncapacidade').value;
+                    
+                    if (!dataInicioIncapacidadeInput) {
+                        ui.showToast("Por favor, informe a Data de Início da Incapacidade (DII).", false);
+                        return; // Interrompe o cálculo
+                    }
+
+                    const dataInicioIncapacidade = new Date(dataInicioIncapacidadeInput + 'T00:00:00');
+                    const dataReforma = new Date('2019-11-13T00:00:00');
 
                     if (isGrave) {
-                        vB = m;
-                        dC = `Cálculo com base no Art. 7º, §3º do Decreto 113/2022. O valor corresponde a 100% da média salarial, por se tratar de incapacidade decorrente de acidente de trabalho, doença profissional ou do trabalho.`;
+                        vB = m; // Para casos graves, é 100% da média em qualquer regra
+                        dC = `Cálculo com base em 100% da média salarial, por se tratar de incapacidade decorrente de acidente de trabalho, doença profissional ou do trabalho.`;
                     } else {
-                        const anosExcedentes = Math.max(0, Math.floor(tempoContribTotalAnos) - 20);
-                        const percentual = Math.min(1, 0.60 + (anosExcedentes * 0.02));
-                        vB = m * percentual;
-                        dC = `Cálculo com base no Art. 7º, §2º do Decreto 113/2022. O valor corresponde a ${ (percentual * 100).toFixed(0) }% da média salarial (60% + 2% por ano de contribuição que exceder 20 anos).`;
+                        // Condição para aplicar a REGRA ANTIGA (DII anterior a 13/11/2019)
+                        if (dataInicioIncapacidade < dataReforma) {
+    const media80 = calcularMedia80Maiores(s);
+
+    // Tempo até a DII em dias (RPPS + externo + especial)
+    const diasNoServicoPublico = Math.max(0, Math.floor((dataInicioIncapacidade - dataAdmissao) / 86400000));
+    const diasExterno = parseInt(document.getElementById('tempoExterno').value) || 0;
+    const diasEspecial = parseInt(document.getElementById('tempoEspecial').value) || 0;
+    const tempoEmDias = diasNoServicoPublico + diasExterno + diasEspecial;
+
+    // Tempo exigido para integralidade na REGRA ANTIGA (varia por sexo e Magistério)
+    const sexo = document.getElementById('sexo').value;
+    const isMagisterio = document.getElementById('isMagisterio').value === 'sim';
+    const anosExigidos = isMagisterio ? (sexo === 'M' ? 30 : 25) : (sexo === 'M' ? 35 : 30);
+    const tempoExigidoEmDias = anosExigidos * 365; // Mantém 365 para compatibilizar com 9.125 = 25*365 do exemplo
+
+    const fatorProporcional = Math.max(0, Math.min(1, tempoEmDias / tempoExigidoEmDias));
+    vB = media80 * fatorProporcional;
+
+    dC = `Cálculo pela REGRA ANTIGA (EC 41/2003) por direito adquirido (DII < 13/11/2019). <br><b>Média dos 80% maiores salários:</b> ${formatarDinheiro(media80)}. <br><b>Tempo considerado:</b> ${tempoEmDias} dias (até a DII). <br><b>Tempo exigido para integral:</b> ${tempoExigidoEmDias} dias (${anosExigidos} anos${isMagisterio ? " — magistério" : ""}, sexo: ${sexo}). <br><b>Fator de Proporcionalidade:</b> (${tempoEmDias} / ${tempoExigidoEmDias}).`;
+} 
+// Lógica para a REGRA NOVA (DII a partir de 13/11/2019) (DII a partir de 13/11/2019)
+                        else {
+                            const anosExcedentes = Math.max(0, Math.floor(tempoContribTotalAnos) - 20);
+                            const percentual = Math.min(1, 0.60 + (anosExcedentes * 0.02));
+                            vB = m * percentual;
+                            dC = `Cálculo pela REGRA NOVA (EC 103/2019). O valor corresponde a ${ (percentual * 100).toFixed(0) }% da média salarial (60% + 2% por ano de contribuição que exceder 20 anos).`;
+                        }
                     }
+
                      document.querySelectorAll("#corpo-tabela-proventos-ato .provento-valor").forEach(i => i.value = '');
                      const baseProventoInput = document.querySelector("#corpo-tabela-proventos-ato .provento-descricao[value='Salário Base']");
                      if(baseProventoInput) {
@@ -744,6 +804,7 @@ function calcularBeneficio(n = true, b = null) {
         }
     }, 50);
 }
+
 
 // =================================================================================
 // FUNÇÕES DE GESTÃO DE CONFIGURAÇÕES
@@ -990,28 +1051,54 @@ function calculateValorLiquido(pB) {
     document.getElementById('resultadoLiquido').innerHTML = html;
 }
 
-
+// ############# INÍCIO DO CÓDIGO CORRIGIDO (VERSÃO 4) #############
 function projetarAposentadoria(mS) {
-    const rPD = document.getElementById('resultadoProjecao'),
-        dN = new Date(document.getElementById('dataNascimento').value + 'T00:00:00'),
-        dA = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00'),
-        s = document.getElementById('sexo').value,
-        tED = parseInt(document.getElementById('tempoExterno').value) || 0,
-        tSD = parseInt(document.getElementById('tempoEspecial').value) || 0,
-        h = new Date(),
-        dR = new Date('2019-11-13T00:00:00'),
-        iA = (h - dN) / 31557600000,
-        tSP = (h - dA) / 31557600000,
-        tCT = tSP + tED / 365.25 + tSD / 365.25,
-        tCR = (dR - dA) / 31557600000 + tED / 365.25 + tSD / 365.25;
-    let p = {},
-        rA = null;
+    const rPD = document.getElementById('resultadoProjecao');
+    const dN = new Date(document.getElementById('dataNascimento').value + 'T00:00:00');
+    const dA = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
+    const s = document.getElementById('sexo').value;
+    const tED = parseInt(document.getElementById('tempoExterno').value) || 0;
+    const tSD = parseInt(document.getElementById('tempoEspecial').value) || 0;
+
+    const dataCalculoValue = document.getElementById('dataCalculo').value;
+    const dataRequerimentoValue = document.getElementById('dataRequerimento').value;
+    let dataReferencia;
+
+    if (dataCalculoValue) {
+        dataReferencia = new Date(dataCalculoValue + 'T00:00:00');
+    } else if (dataRequerimentoValue) {
+        dataReferencia = new Date(dataRequerimentoValue + 'T00:00:00');
+    } else {
+        dataReferencia = new Date();
+    }
+
+    const dR = new Date('2019-11-13T00:00:00');
+    
+    // Cálculos de tempo e idade
+    const iA = (dataReferencia - dN) / 31557600000;
+    const tempoServicoPublicoAnos = (dataReferencia - dA) / 31557600000;
+    const tempoExternoAnos = tED / 365.25;
+    const tempoEspecialAnos = tSD / 365.25;
+    
+    const tCT = tempoServicoPublicoAnos + tempoExternoAnos + tempoEspecialAnos;
+    
+    const tempoServicoPublicoNaReformaAnos = (dR - dA) / 31557600000;
+    const tCR = tempoServicoPublicoNaReformaAnos + tempoExternoAnos + tempoEspecialAnos;
+
+    let p = {};
+    let rA = null;
+
+    const isMagisterio = document.getElementById('isMagisterio').value === 'sim';
+    const redutorIdade = isMagisterio ? 5 : 0;
+    const redutorTempo = isMagisterio ? 5 : 0;
+
     const vRG = mS * Math.min(1, 0.6 + Math.max(0, Math.floor(tCT) - 20) * 0.02);
-    const tMP50 = s === 'M' ? 33 : 28;
+    
+    const tMP50 = (s === 'M' ? 33 : 28) - redutorTempo;
     if (tCR >= tMP50) {
-        const tN = s === 'M' ? 35 : 30,
-            tF = Math.max(0, tN - tCR),
-            ped = tF * 0.5;
+        const tN = (s === 'M' ? 35 : 30) - redutorTempo;
+        const tF = Math.max(0, tN - tCR);
+        const ped = tF * 0.5;
         if (tCT >= tN + ped) {
             const fP = calcularFatorPrevidenciario(iA, tCT, s);
             p['Pedágio 50%'] = { data: 'Já cumpriu!', valor: mS * fP, obs: `Fator Prev: ${fP.toFixed(4)}`, legal: "Art. 17 EC 103/19" };
@@ -1020,52 +1107,57 @@ function projetarAposentadoria(mS) {
             p['Pedágio 50%'] = { data: 'Não cumpriu', valor: 0, obs: 'Requer tempo + pedágio' };
         }
     }
-    const iMP100 = s === 'M' ? 60 : 57,
-        tNP100 = s === 'M' ? 35 : 30;
+
+    const iMP100 = (s === 'M' ? 60 : 57) - redutorIdade;
+    const tNP100 = (s === 'M' ? 35 : 30) - redutorTempo;
     if (iA >= iMP100 && tCT >= tNP100) {
         p['Pedágio 100%'] = { data: 'Já cumpriu!', valor: mS, obs: '100% da média', legal: "Art. 20 EC 103/19" };
         if (!rA) rA = p['Pedágio 100%'].legal;
     } else {
-        const aPI = Math.max(0, iMP100 - iA),
-            aPT = Math.max(0, tNP100 - tCT),
-            aF = Math.max(aPI, aPT);
+        const aPI = Math.max(0, iMP100 - iA);
+        const aPT = Math.max(0, tNP100 - tCT);
+        const aF = Math.max(aPI, aPT);
         if (aF < 40) {
-            const dP = new Date();
+            const dP = new Date(dataReferencia);
             dP.setFullYear(dP.getFullYear() + Math.ceil(aF));
             p['Pedágio 100%'] = { data: `~ ${dP.toLocaleDateString('pt-BR')}`, valor: mS, obs: '100% da média' };
         }
     }
-    const aA = h.getFullYear(),
-        iMP = (s === 'M' ? 61 : 56) + Math.floor((aA - 2019) * 0.5),
-        tMP = s === 'M' ? 35 : 30;
+
+    const aA = dataReferencia.getFullYear();
+    const iMP = ((s === 'M' ? 61 : 56) - redutorIdade) + Math.floor((aA - 2019) * 0.5);
+    const tMP = (s === 'M' ? 35 : 30) - redutorTempo;
     if (iA >= iMP && tCT >= tMP) {
         p['Idade Progressiva'] = { data: 'Já cumpriu!', valor: vRG, obs: '60% + 2% por ano', legal: "Art. 4º EC 103/19 c/c Lei 047/08" };
         if (!rA) rA = p['Idade Progressiva'].legal;
     }
-    let pA = iA + tCT,
-        pN = (s === 'M' ? 96 : 86) + h.getFullYear() - 2019;
+
+    const pA = iA + tCT;
+    const pN = ((s === 'M' ? 96 : 86) - (isMagisterio ? 10 : 0)) + (aA - 2019);
     if (pA >= pN) {
         p['Pontos'] = { data: 'Já cumpriu!', valor: vRG, obs: '60% + 2% por ano', legal: "Art. 4º EC 103/19 c/c Lei 047/08" };
         if (!rA) rA = p['Pontos'].legal;
     }
-    const R_IM_M = 65,
-        R_IM_F = 62;
+
+    const R_IM_M = 65 - redutorIdade;
+    const R_IM_F = 62 - redutorIdade;
     if (iA >= (s === 'M' ? R_IM_M : R_IM_F) && tCT >= 25) {
-        p['Regra Permanente'] = { data: 'Já cumpriu!', valor: vRG, obs: '60% + 2% por ano', legal: "Art. 10 EC 103/19 c/c Lei 047/08" };
+        p['Regra Permanente'] = { data: 'Já cumpriu!', valor: vRG, obs: 'Requer 25a contrib.', legal: "Art. 10 EC 103/19 c/c Lei 047/08" };
         if (!rA) rA = p['Regra Permanente'].legal;
     } else {
         const aPI = Math.max(0, (s === 'M' ? R_IM_M : R_IM_F) - iA);
         if (aPI < 40) {
-            const dP = new Date();
+            const dP = new Date(dataReferencia);
             dP.setFullYear(dP.getFullYear() + Math.ceil(aPI));
             p['Regra Permanente'] = { data: `~ ${dP.toLocaleDateString('pt-BR')}`, valor: vRG, obs: 'Requer 25a contrib.' };
         }
     }
+    
     AppState.simulacaoResultados.fundamentoLegal = rA;
-    let html = `<h3>📅 Projeção de Elegibilidade</h3><p>Idade: ${iA.toFixed(1)}, Tempo Contrib.: ${tCT.toFixed(1)} anos</p><table><thead><tr><th>Regra</th><th>Data</th><th>Valor</th><th>Obs.</th></tr></thead><tbody>`;
+    let html = `<h3>📅 Projeção de Elegibilidade</h3><p>Na data de referência (${dataReferencia.toLocaleDateString('pt-BR')})</p><p>Idade: ${iA.toFixed(1)} anos, Tempo Contrib.: ${tCT.toFixed(1)} anos</p><table><thead><tr><th>Regra</th><th>Data</th><th>Valor</th><th>Obs.</th></tr></thead><tbody>`;
     if (Object.keys(p).length > 0) {
-        for (const r in p) html += `<tr><td>${r}</td><td>${p[r].data}</td><td>${p[r].valor>0?formatarDinheiro(p[r].valor):'-'}</td><td>${p[r].obs||''}</td></tr>`;
-    } else html += `<tr><td colspan="4">Nenhuma regra cumprida.</td></tr>`;
+        for (const r in p) html += `<tr><td>${r}</td><td>${p[r].data}</td><td>${p[r].valor > 0 ? formatarDinheiro(p[r].valor) : '-'}</td><td>${p[r].obs || ''}</td></tr>`;
+    } else html += `<tr><td colspan="4">Nenhuma regra cumprida na data de referência.</td></tr>`;
     html += '</tbody></table><small>Nota: Projeções são estimativas.</small>';
     rPD.innerHTML = html;
 }
@@ -1079,17 +1171,25 @@ function calcularFatorPrevidenciario(i, t, s) {
 }
 
 function verificarAbonoPermanencia() {
-    const rAD = document.getElementById('resultadoAbono'),
-        dN = new Date(document.getElementById('dataNascimento').value + 'T00:00:00'),
-        dA = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00'),
-        s = document.getElementById('sexo').value,
-        h = new Date(),
-        i = (h - dN) / 31557600000,
-        tC = (h - dA) / 31557600000 + parseInt(document.getElementById('tempoExterno').value) / 365.25 + parseInt(document.getElementById('tempoEspecial').value) / 365.25,
-        iM = s === 'M' ? 62 : 57,
-        tM = s === 'M' ? 35 : 30;
-    rAD.innerHTML = i >= iM && tC >= tM ? `<h3>✅ Abono de Permanência</h3><p>O servidor <b>cumpriu os requisitos</b> e, ao permanecer em atividade, tem direito ao Abono de Permanência.</p>` : '';
+    const isMagisterio = document.getElementById('isMagisterio').value === 'sim';
+    const redutor = isMagisterio ? 5 : 0;
+    
+    const rAD = document.getElementById('resultadoAbono');
+    const dN = new Date(document.getElementById('dataNascimento').value + 'T00:00:00');
+    const dA = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
+    const s = document.getElementById('sexo').value;
+
+    const dataReferencia = new Date(); // Abono é sempre verificado na data atual
+    
+    const i = (dataReferencia - dN) / 31557600000;
+    const tC = (dataReferencia - dA) / 31557600000 + (parseInt(document.getElementById('tempoExterno').value) || 0) / 365.25 + (parseInt(document.getElementById('tempoEspecial').value) || 0) / 365.25;
+        
+    const iM = (s === 'M' ? 62 : 57) - redutor;
+    const tM = (s === 'M' ? 35 : 30) - redutor;
+
+    rAD.innerHTML = i >= iM && tC >= tM ? `<h3>✅ Abono de Permanência</h3><p>O servidor <b>cumpriu os requisitos</b> para aposentadoria voluntária na data de hoje e, ao permanecer em atividade, tem direito ao Abono de Permanência.</p>` : '';
 }
+// ############# FIM DO CÓDIGO CORRIGIDO (VERSÃO 4) #############
 
 function desenharGrafico(s, m) {
     const ctx = document.getElementById("graficoSalarios").getContext("2d");
@@ -1527,4 +1627,8 @@ Object.assign(window, {
     salvarConfiguracoes,
     calcularTempoEntreDatas, limparCalculoTempo
 });
+
+
+
+
 
