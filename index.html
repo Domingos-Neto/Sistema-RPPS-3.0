@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>PREVTECH - Sistema de Gestão Previdenciária v3.5</title>
+<title>PREVTECH - Sistema de Gestão Previdenciária v3.5 (Revisado)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,15 +20,13 @@
 <div id="telaLogin">
   <div class="login-container">
     <div class="login-branding">
-  <div class="branding-content">
-    <img src="https://i.postimg.cc/c1hgtgvp/Logo-Prev-Tech.png" alt="Logo PrevTech" class="branding-logo">
-    <h2>PREVTECH</h2>
-    <p>Sistema de Gestão do Regime Próprio de Previdência Social.</p>
-  </div>
-</div>
+      <div class="branding-content">
+        <h2>PREVTECH</h2>
+        <p>Sistema de Gestão do Regime Próprio de Previdência Social.</p>
+      </div>
+    </div>
     <div class="login-form" id="login-form-container">
-      <img src="https://i.postimg.cc/c1hgtgvp/Logo-Prev-Tech.png" alt="Logo PrevTech" class="login-logo">
-      
+         
       <h2>Acesse sua Conta</h2>
       <p>Bem-vindo(a) de volta! Use sua conta Google autorizada para acessar.</p>
       
@@ -159,7 +157,17 @@
                         </select>
                       </label>
                         </div>
-                        <div id="camposIncapacidade" style="display:none;" class="form-grid"><label>A incapacidade decorre de acidente de trabalho, doença profissional ou doença grave?<select id="incapacidadeGrave"><option value="sim">Sim</option><option value="nao" selected>Não</option></select></label></div>
+                        <div id="camposIncapacidade" style="display:none;" class="form-grid">
+    <label>A incapacidade decorre de acidente de trabalho, doença profissional ou doença grave?
+        <select id="incapacidadeGrave">
+            <option value="sim">Sim</option>
+            <option value="nao" selected>Não</option>
+        </select>
+    </label>
+    <label>Data de Início da Incapacidade (DII):
+        <input type="date" id="dataInicioIncapacidade" />
+    </label>
+</div>
                         <div id="containerGestaoDependentes" style="display:none;"><h4>Dependentes para Pensão</h4><table id="tabela-dependentes"><thead><tr><th>Nome Completo</th><th style="width: 150px;">Data de Nasc.</th><th style="width: 180px;">Parentesco</th><th style="width: 110px;">Inválido?</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-dependentes"></tbody></table><button type="button" onclick="adicionarLinhaDependente()">+ Adicionar Dependente</button></div>
                         <div id="camposPensaoAtivo" style="display:none;"></div>
                         <div id="camposPensaoAposentado" style="display:none;" class="form-grid"><label>Valor do Provento Bruto do Aposentado (R$): <input type="number" id="proventoAposentado" value="0" /></label></div>
@@ -172,10 +180,11 @@
                             <label>Cargo (com referência): <input type="text" id="cargoServidor" placeholder="Ex: Professora de Educação Básica II Ref. 16" /></label>
                             <label>Carga Horária: <input type="text" id="cargaHorariaServidor" placeholder="Ex: 20hrs. semanais" /></label>
                             <label>Lotação (Secretaria): <input type="text" id="lotacaoServidor" placeholder="Ex: Secretaria de Educação de Itapipoca-CE" /></label>
+                            <label>Magistério (Lei 11.301/2006)? <select id="isMagisterio"><option value="nao" selected>Não</option><option value="sim">Sim</option></select></label>
                             <label>Data de Admissão: <input type="date" id="dataAdmissao" /></label>
+                            <label>Data de Nascimento: <input type="date" id="dataNascimento" /></label>
                             <label>Data do Requerimento: <input type="date" id="dataRequerimento" /></label>
                             <label>Data do Cálculo: <input type="date" id="dataCalculo" /></label>
-                            <label>Data de Nascimento: <input type="date" id="dataNascimento" /></label>
                             <label>Sexo: <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select></label>
                             <label>Tempo de Contribuição Externo (dias): <input type="number" id="tempoExterno" value="0" min="0" /></label>
                             <label><div class="tooltip-container">Tempo Especial Convertido (dias):<span class="tooltip">?<span class="tooltiptext">Informe o tempo de atividade especial já convertido em tempo comum. Ex: 10 anos de atividade especial de um homem (fator 1.4) se convertem em 14 anos de tempo comum (5110 dias), ou seja, 4 anos (1460 dias) a serem informados aqui.</span></span></div><input type="number" id="tempoEspecial" value="0" min="0" /></label>
@@ -194,10 +203,10 @@
                         <label>Matrícula: <input type="text" id="ctc-matricula"></label>
                         <label>CPF: <input type="text" id="ctc-cpf" placeholder="000.000.000-00"><small id="ctc-cpf-status" class="status-message"></small></label>
                         <label>RG (com órgão emissor): <input type="text" id="ctc-rg"></label>
-                        <label>Data de Nascimento: <input type="date" id="ctc-dataNascimento"></label>
                         <label>Sexo: <select id="ctc-sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select></label>
                         <label>Cargo Efetivo: <input type="text" id="ctc-cargo" placeholder="Ex: Professor de Educação Básica II"></label>
                         <label>Lotação (Secretaria): <input type="text" id="ctc-lotacao" placeholder="Ex: Secretaria de Educação"></label>
+                        <label>Data de Nascimento: <input type="date" id="ctc-dataNascimento"></label>
                         <label>Data de Admissão: <input type="date" id="ctc-dataAdmissao"></label>
                         <label>Data de Exoneração: <input type="date" id="ctc-dataExoneracao"></label>
                         <label>Nº do Processo: <input type="text" id="ctc-processo"></label>
@@ -206,52 +215,37 @@
 
                 <div id="telaLegislacao" style="display:none;">
                     <h2><i class="ri-book-open-fill"></i> Legislação Aplicável ao RPPS</h2>
-                    <p>Este módulo ainda está em desenvolvimento.</p>
+                    <p> ... </p>
                 </div>
 
                 <div id="telaConfiguracoes" style="display:none;">
                     <h2><i class="ri-settings-3-fill"></i> Configurações do Sistema</h2>
-                    <p>Preencha os campos abaixo com as informações que serão utilizadas na geração de documentos oficiais.</p>
-                    <div class="form-grid">
-                        <label>Nome do Prefeito(a):
-                            <input type="text" id="config-nome-prefeito" placeholder="Digite o nome completo do prefeito(a)">
-                        </label>
-                        <label>Nome do Presidente(a) do ITAPREV:
-                            <input type="text" id="config-nome-presidente" placeholder="Digite o nome completo do presidente(a)">
-                        </label>
-                    </div>
-                    <div class="wizard-nav" style="justify-content: flex-end; margin-top: 20px;">
-                        <button onclick="salvarConfiguracoes(this)">
-                            <span class="button-text">Salvar Configurações</span>
-                            <span class="spinner"></span>
-                        </button>
-                    </div>
+                    <p> ... </p>
                 </div>
-
 
                 <div id="telaCadastro" style="display:none;">
                     <h2><i class="ri-user-settings-fill"></i> Módulo de Gestão Cadastral</h2>
-                    <p>Este módulo ainda está em desenvolvimento.</p>
+                    <p> ... </p>
                 </div>
                 
                 <div id="telaProcessos" style="display:none;">
                     <h2><i class="ri-node-tree"></i> Módulo de Acompanhamento de Processos</h2>
-                    <p>Este módulo ainda está em desenvolvimento.</p>
+                    <p> ... </p>
                 </div>
 
                 <div id="telaFinanceiro" style="display:none;">
                     <h2><i class="ri-line-chart-fill"></i> Módulo Financeiro e Contribuições</h2>
-                    <p>Este módulo ainda está em desenvolvimento.</p>
+                    <p> ... </p>
                 </div>
 
                 <div id="telaRelatorios" style="display:none;">
                     <h2><i class="ri-file-chart-fill"></i> Módulo de Relatórios e BI</h2>
-                    <p>Este módulo ainda está em desenvolvimento.</p>
+                    <p> ... </p>
                 </div>
                 
                 <div id="telaUsuarios" style="display:none;">
                     <h2><i class="ri-shield-user-fill"></i> Gerenciamento de Usuários</h2>
-                    <p>Este módulo ainda está em desenvolvimento.</p>
+                    <p> ... </p>
                 </div>
 
                 <input type="file" id="arquivoExcel" accept=".xlsx, .xls" style="display:none;" onchange="importarExcel()" />
@@ -260,7 +254,7 @@
             </div> 
             <footer>
                 <p>ITAPREV - Sistema de Gestão Previdenciária. Itapipoca-CE, 2025.</p>
-                <p><small>Desenvolvedor: Domingos Barroso Neto v3.5</small></p>
+                <p><small>Desenvolvedor: Domingos Barroso Neto v3.1</small></p>
             </footer>
         </div>
 
@@ -284,6 +278,11 @@
 
 </body>
 </html>
+
+
+
+
+
 
 
 
