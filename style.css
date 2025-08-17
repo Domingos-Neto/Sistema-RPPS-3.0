@@ -395,7 +395,7 @@ body.dark-mode .topbar button:hover {
 /* ============================================= */
 /* FORMULÁRIOS E INPUTS                          */
 /* ============================================= */
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px; align-items: start;}
 input,select, textarea{width:100%;box-sizing:border-box}
 label{margin-bottom:0;font-size:14px;color:var(--cor-texto);display:flex;flex-direction:column;}
 input[type="date"],input[type="text"],input[type="number"],input[type="password"],select,textarea{padding:10px;margin-top:5px;border:1px solid var(--cor-borda);border-radius:6px; font-family:'Inter',sans-serif; background-color: var(--cor-superficie); color: var(--cor-texto);}
@@ -629,6 +629,7 @@ body.dark-mode .dashboard-card i {
   margin-left: auto;
   margin-right: auto;
 }
+
 /* ============================================= */
 /* ESTILOS ADICIONAIS PARA CORREÇÃO DE LAYOUT    */
 /* ============================================= */
