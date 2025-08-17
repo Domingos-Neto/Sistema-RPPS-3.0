@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>PREVTECH - Sistema de Gestão Previdenciária v3.5 (Revisado)</title>
+<title>PREVTECH - Sistema de Gestão Previdenciária v4.2 (Revisado)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,17 +21,18 @@
   <div class="login-container">
     <div class="login-branding">
       <div class="branding-content">
+        <img src="https://i.imgur.com/KagJ55x.png" alt="Logo PREVTECH" class="branding-logo">
         <h2>PREVTECH</h2>
         <p>Sistema de Gestão do Regime Próprio de Previdência Social.</p>
       </div>
     </div>
     <div class="login-form" id="login-form-container">
-      <img src="Logo PrevTech arredondada.jpg" alt="Logo PrevTech" class="login-logo">
+      <img src="https://i.imgur.com/KagJ55x.png" alt="Logo PREVTECH" class="login-logo">
       
       <h2>Acesse sua Conta</h2>
       <p>Bem-vindo(a) de volta! Use sua conta Google autorizada para acessar.</p>
       
-      <button onclick="auth.loginGoogle()" class="google-login-btn">
+      <button onclick="auth.loginGoogle()" class="primary google-login-btn">
         <i class="fab fa-google"></i> Entrar com Google
       </button>
       
@@ -116,7 +117,7 @@
                                 <label style="font-size:0.9em;">Data Fim: <input type="date" id="calc-data-fim" style="padding:8px;"></label>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                     <button id="btn-limpar-tempo" class="secondary" style="margin-top:0;">Limpar</button>
-                                    <button id="btn-calcular-tempo" class="danger" style="margin-top:0;">Calcular</button>
+                                    <button id="btn-calcular-tempo" class="primary" style="margin-top:0;">Calcular</button>
                                 </div>
                             </div>
                             <div id="resultado-calculo-tempo" style="margin-top:15px; background: var(--cor-fundo); padding:10px; border-radius:6px; width:100%; min-height:75px; font-size: 0.9em;"></div>
@@ -159,17 +160,17 @@
                       </label>
                         </div>
                         <div id="camposIncapacidade" style="display:none;" class="form-grid">
-    <label>A incapacidade decorre de acidente de trabalho, doença profissional ou doença grave?
-        <select id="incapacidadeGrave">
-            <option value="sim">Sim</option>
-            <option value="nao" selected>Não</option>
-        </select>
-    </label>
-    <label>Data de Início da Incapacidade (DII):
-        <input type="date" id="dataInicioIncapacidade" />
-    </label>
-</div>
-                        <div id="containerGestaoDependentes" style="display:none;"><h4>Dependentes para Pensão</h4><table id="tabela-dependentes"><thead><tr><th>Nome Completo</th><th style="width: 150px;">Data de Nasc.</th><th style="width: 180px;">Parentesco</th><th style="width: 110px;">Inválido?</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-dependentes"></tbody></table><button type="button" onclick="adicionarLinhaDependente()">+ Adicionar Dependente</button></div>
+                            <label>A incapacidade decorre de acidente de trabalho, doença profissional ou doença grave?
+                                <select id="incapacidadeGrave">
+                                    <option value="sim">Sim</option>
+                                    <option value="nao" selected>Não</option>
+                                </select>
+                            </label>
+                            <label>Data de Início da Incapacidade (DII):
+                                <input type="date" id="dataInicioIncapacidade" />
+                            </label>
+                        </div>
+                        <div id="containerGestaoDependentes" style="display:none;"><h4>Dependentes para Pensão</h4><table id="tabela-dependentes"><thead><tr><th>Nome Completo</th><th style="width: 150px;">Data de Nasc.</th><th style="width: 180px;">Parentesco</th><th style="width: 110px;">Inválido?</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-dependentes"></tbody></table><button type="button" class="primary" onclick="adicionarLinhaDependente()">+ Adicionar Dependente</button></div>
                         <div id="camposPensaoAtivo" style="display:none;"></div>
                         <div id="camposPensaoAposentado" style="display:none;" class="form-grid"><label>Valor do Provento Bruto do Aposentado (R$): <input type="number" id="proventoAposentado" value="0" /></label></div>
                         <h4>Informações do Servidor (Instituidor)</h4>
@@ -187,7 +188,29 @@
                             <label>Data do Requerimento: <input type="date" id="dataRequerimento" /></label>
                             <label>Data do Cálculo: <input type="date" id="dataCalculo" /></label>
                             <label>Sexo: <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select></label>
-                            <label>Tempo de Contribuição Externo (dias): <input type="number" id="tempoExterno" value="0" min="0" /></label>
+                            
+                            <div class="form-grid-span-all">
+                                <label>
+                                    <div class="tooltip-container">
+                                        Tempo de Contribuição Externo:
+                                        <span class="tooltip">?<span class="tooltiptext">Adicione os períodos de contribuição externa (ex: INSS). O sistema somará os dias e os utilizará nos cálculos.</span></span>
+                                    </div>
+                                </label>
+                                <div class="tempo-externo-container">
+                                    <div class="tempo-externo-inputs">
+                                        <label>Data Início: <input type="date" id="te-data-inicio"></label>
+                                        <label>Data Fim: <input type="date" id="te-data-fim"></label>
+                                        <button class="primary" onclick="adicionarPeriodoExterno()">Adicionar</button>
+                                    </div>
+                                    <table id="tabela-tempo-externo">
+                                        <thead><tr><th>Início</th><th>Fim</th><th>Dias</th><th>Ação</th></tr></thead>
+                                        <tbody id="corpo-tabela-tempo-externo"></tbody>
+                                    </table>
+                                    <div id="total-tempo-externo">Total de Dias: 0</div>
+                                </div>
+                                <input type="hidden" id="tempoExterno" value="0">
+                            </div>
+
                             <label><div class="tooltip-container">Tempo Especial Convertido (dias):<span class="tooltip">?<span class="tooltiptext">Informe o tempo de atividade especial já convertido em tempo comum. Ex: 10 anos de atividade especial de um homem (fator 1.4) se convertem em 14 anos de tempo comum (5110 dias), ou seja, 4 anos (1460 dias) a serem informados aqui.</span></span></div><input type="number" id="tempoEspecial" value="0" min="0" /></label>
                             
                             <label>
@@ -197,13 +220,78 @@
                                 </div>
                                 <input type="number" id="tempoContribuicaoEfetivoDias" value="0" min="0" />
                             </label>
-                            </div>
+                        </div>
                         <div id="camposAtoAposentadoria" style="display:none;"><h4>Informações para o Ato de Aposentadoria</h4><div class="form-grid"><label>Nº do Processo Administrativo: <input type="text" id="processoAposentadoria" /></label><label>Nº do Ato de Aposentadoria: <input type="number" id="atoNumeroAposentadoria" /></label></div><label>Fundamento Legal (para o Ato de Aposentadoria):<textarea id="fundamentoLegalPersonalizado"></textarea></label></div>
                         <div id="camposAtoPensao" style="display:none;"><h4>Informações para o Ato de Pensão</h4><div class="form-grid"><label>Nome do Pensionista Principal (Beneficiário): <input type="text" id="nomePensionista" /></label><label>Relação de Parentesco (do Principal): <input type="text"id="relacaoPensionista" /></label><label>Data do Óbito do Servidor: <input type="date" id="dataObito" /></label><label>Nº do Processo Administrativo: <input type="text" id="processoAdministrativo" /></label><label>Nº do Ato de Pensão: <input type="number" id="atoNumero" /></label></div></div>
-                        <div class="wizard-nav"><button class="secondary" onclick="handleNavClick(event, 'dashboard')">Voltar ao Painel</button><button onclick="irParaPasso(2)">Próximo Passo ❯</button></div>
+                        <div class="wizard-nav"><button class="secondary" onclick="handleNavClick(event, 'dashboard')">Voltar ao Painel</button><button class="primary" onclick="irParaPasso(2)">Próximo Passo ❯</button></div>
                     </div>
-                    <div id="passo2" class="wizard-step" style="display:none;"><h2 class="accordion-toggle">Passo 2: Salários de Contribuição (para Média)</h2><div class="accordion-content"><div class="tabela-container"><table id="tabela-salarios"><thead><tr><th>Nº</th><th>MÊS/ANO</th><th>FATOR</th><th>SALÁRIO (R$)</th><th>SALÁRIO ATUALIZADO (R$)</th><th>Ações</th></tr></thead><tbody id="corpo-tabela"></tbody></table></div><div class="grupos-botoes"><div class="grupo"><h4>Ações da Tabela</h4><button onclick="adicionarLinha()"><span class="button-text">+ Adicionar Linha</span></button><button class="danger" onclick="limparTabela()">Limpar Tabela</button><button onclick="buscarEPreencherFatores(this)"><span class="button-text">📊 Atualizar Fatores (IBGE)</span><span class="spinner"></span></button></div><div class="grupo"><h4>Importar/Exportar Dados</h4><button onclick="exportarExcel(this)">📥 Exportar para Excel</button><button onclick="document.getElementById('arquivoExcel').click()">📥 Importar do Excel</button></div></div></div><div class="wizard-nav"><button class="secondary" onclick="irParaPasso(1)">❮ Passo Anterior</button><button onclick="calcularBeneficio(true, this)"><span class="button-text">Calcular e Ver Resultado ❯</span><span class="spinner"></span></button></div></div>
-                    <div id="passo3" class="wizard-step" style="display:none;"><h2>Passo 3: Resultado e Geração de Documentos</h2><div id="resultado"></div><div id="resultadoLiquido"></div><div id="resultadoProjecao"></div><div id="resultadoAbono"></div><div id="containerDetalhamentoProventos" style="display:none;"><h4>Detalhamento dos Proventos para o Ato</h4><table id="tabela-proventos-ato"><thead><tr><th>DESCRIÇÃO</th><th>VALOR (R$)</th><th>Ações</th></tr></thead><tbody id="corpo-tabela-proventos-ato"></tbody><tfoot><tr style="font-weight: bold;"><td>TOTAL DOS PROVENTOS</td><td id="total-proventos-ato">R$ 0,00</td><td></td></tr></tfoot></table><button onclick="adicionarLinhaProvento()">+ Adicionar Linha de Provento</button></div><canvas id="graficoSalarios"></canvas><h4>Ações Finais</h4><div class="form-grid"><div class="grupo-horizontal"><input type="text" id="nomeSimulacao" placeholder="Nome da simulação p/ salvar" /><button onclick="salvarSimulacaoHistorico()">🕘 Salvar no Histórico</button></div><div class="grupo-horizontal"><button class="secondary" onclick="imprimirSimulacao()">🖨️ Imprimir Relatório</button><button onclick="exportarTudoZIP(this)">📦 Exportar ZIP</button></div></div><div id="containerAtoAposentadoriaBtn" style="display:none; margin-top: 20px;"><button class="success" onclick="gerarAtoDeAposentadoria(this)"><span class="button-text">🏛️ Gerar Ato de Aposentadoria</span><span class="spinner"></span></button></div><div id="containerAtoPensaoBtn" style="display:none; margin-top: 20px;"><button class="success" onclick="gerarAtoDePensao(this)"><span class="button-text">🏛️ Gerar Ato de Pensão</span><span class="spinner"></span></button></div><div class="wizard-nav"><button class="secondary" onclick="irParaPasso(2)">❮ Voltar e Ajustar Salários</button><button onclick="handleNavClick(event, 'dashboard')">Finalizar e Voltar ao Painel</button></div></div>
+                    <div id="passo2" class="wizard-step" style="display:none;">
+                        <h2 class="accordion-toggle">Passo 2: Salários de Contribuição (para Média)</h2>
+                        <div class="accordion-content">
+                            <div class="tabela-container">
+                                <table id="tabela-salarios">
+                                    <thead><tr><th>Nº</th><th>MÊS/ANO</th><th>FATOR</th><th>SALÁRIO (R$)</th><th>SALÁRIO ATUALIZADO (R$)</th><th>Ações</th></tr></thead>
+                                    <tbody id="corpo-tabela"></tbody>
+                                </table>
+                            </div>
+                            <div class="grupos-botoes">
+                                <div class="grupo">
+                                    <h4>Ações da Tabela</h4>
+                                    <button class="primary" onclick="adicionarLinha()"><i class="ri-add-line"></i> <span class="button-text">Adicionar Linha</span></button>
+                                    <button class="danger" onclick="limparTabela()"><i class="ri-delete-bin-line"></i> Limpar Tabela</button>
+                                </div>
+                                <div class="grupo">
+                                    <h4>Ferramentas</h4>
+                                    <button class="secondary" onclick="buscarEPreencherFatores(this)"><i class="ri-refresh-line"></i> <span class="button-text">Atualizar Fatores (BCB)</span><span class="spinner"></span></button>
+                                    <button class="secondary" onclick="exportarExcel(this)"><i class="ri-file-excel-2-line"></i> Exportar para Excel</button>
+                                    <button class="secondary" onclick="document.getElementById('arquivoExcel').click()"><i class="ri-upload-2-line"></i> Importar do Excel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wizard-nav"><button class="secondary" onclick="irParaPasso(1)">❮ Passo Anterior</button><button class="primary" onclick="calcularBeneficio(true, this)"><span class="button-text">Calcular e Ver Resultado ❯</span><span class="spinner"></span></button></div>
+                    </div>
+                    <div id="passo3" class="wizard-step" style="display:none;">
+                        <h2>Passo 3: Resultado e Geração de Documentos</h2>
+                        <div id="resultado"></div>
+                        <div id="resultadoLiquido"></div>
+                        <div id="resultadoProjecao"></div>
+                        <div id="resultadoAbono"></div>
+                        <div id="containerDetalhamentoProventos" style="display:none;">
+                            <h4>Detalhamento dos Proventos para o Ato</h4>
+                            <table id="tabela-proventos-ato">
+                                <thead><tr><th>DESCRIÇÃO</th><th>VALOR (R$)</th><th>Ações</th></tr></thead>
+                                <tbody id="corpo-tabela-proventos-ato"></tbody>
+                                <tfoot><tr style="font-weight: bold;"><td>TOTAL DOS PROVENTOS</td><td id="total-proventos-ato">R$ 0,00</td><td></td></tr></tfoot>
+                            </table>
+                            <button class="primary" onclick="adicionarLinhaProvento()">+ Adicionar Linha de Provento</button>
+                        </div>
+                        <canvas id="graficoSalarios"></canvas>
+                        
+                        <h4>Ações Finais</h4>
+                        <div class="acoes-finais-container">
+                            <div class="grupo-salvar">
+                                <input type="text" id="nomeSimulacao" placeholder="Nome da simulação p/ salvar" />
+                                <button class="primary" onclick="salvarSimulacaoHistorico()">🕘 Salvar no Histórico</button>
+                            </div>
+                            <div class="grupo-acoes">
+                                <button class="secondary" onclick="imprimirSimulacao()">🖨️ Imprimir Relatório</button>
+                                <button class="primary" onclick="exportarTudoZIP(this)">📦 Exportar ZIP</button>
+                                <button id="btnGerarAtoAposentadoria" class="success" onclick="gerarAtoDeAposentadoria(this)" style="display: none;">
+                                    <span class="button-text">🏛️ Gerar Ato de Aposentadoria</span>
+                                    <span class="spinner"></span>
+                                </button>
+                                <button id="btnGerarAtoPensao" class="success" onclick="gerarAtoDePensao(this)" style="display: none;">
+                                    <span class="button-text">🏛️ Gerar Ato de Pensão</span>
+                                    <span class="spinner"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="wizard-nav">
+                            <button class="secondary" onclick="irParaPasso(2)">❮ Voltar e Ajustar Salários</button>
+                            <button class="primary" onclick="handleNavClick(event, 'dashboard')">Finalizar e Voltar ao Painel</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="geradorCTC" style="display:none;">
@@ -219,42 +307,67 @@
                         <label>Data de Admissão: <input type="date" id="ctc-dataAdmissao"></label>
                         <label>Data de Exoneração: <input type="date" id="ctc-dataExoneracao"></label>
                         <label>Nº do Processo: <input type="text" id="ctc-processo"></label>
-                    </div><h4>Períodos de Contribuição</h4><table id="tabela-periodos-ctc"><thead><tr><th style="width: 150px;">Data Início</th><th style="width: 150px;">Data Fim</th><th style="width: 100px;">Tempo Bruto (dias)</th><th style="width: 100px;">Deduções (dias)</th><th style="width: 120px;">Tempo Líquido (dias)</th><th>Fonte / Observação</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-periodos-ctc"></tbody></table><button type="button" onclick="adicionarLinhaPeriodoCTC()">+ Adicionar Período</button><h4 id="total-tempo-ctc" style="text-align: right; border-top: 2px solid var(--prevtech-azul-escuro); padding-top: 10px; margin-top:20px;">Total: 0 dias</h4><div class="wizard-nav"><button class="secondary" onclick="handleNavClick(event, 'dashboard')">Voltar ao Painel</button><button onclick="salvarCTC()" class="secondary">💾 Salvar CTC</button><button class="success" onclick="gerarDocumentoCTC(this)"><span class="button-text">🏛️ Gerar Documento CTC</span><span class="spinner"></span></button></div>
+                    </div><h4>Períodos de Contribuição</h4><table id="tabela-periodos-ctc"><thead><tr><th style="width: 150px;">Data Início</th><th style="width: 150px;">Data Fim</th><th style="width: 100px;">Tempo Bruto (dias)</th><th style="width: 100px;">Deduções (dias)</th><th style="width: 120px;">Tempo Líquido (dias)</th><th>Fonte / Observação</th><th style="width: 100px;">Ações</th></tr></thead><tbody id="corpo-tabela-periodos-ctc"></tbody></table><button type="button" class="primary" onclick="adicionarLinhaPeriodoCTC()">+ Adicionar Período</button><h4 id="total-tempo-ctc" style="text-align: right; border-top: 2px solid var(--prevtech-azul-escuro); padding-top: 10px; margin-top:20px;">Total: 0 dias</h4><div class="wizard-nav"><button class="secondary" onclick="handleNavClick(event, 'dashboard')">Voltar ao Painel</button><button onclick="salvarCTC()" class="secondary">💾 Salvar CTC</button><button class="success" onclick="gerarDocumentoCTC(this)"><span class="button-text">🏛️ Gerar Documento CTC</span><span class="spinner"></span></button></div>
                 </div>
 
                 <div id="telaLegislacao" style="display:none;">
                     <h2><i class="ri-book-open-fill"></i> Legislação Aplicável ao RPPS</h2>
-                    <p> ... </p>
+                    <p>Consulte abaixo as principais normas que regem o Regime Próprio de Previdência Social.</p>
+                    
+                    <h4>Legislação Federal</h4>
+                    <ul>
+                        <li><strong>Emenda Constitucional nº 103/2019:</strong> Altera o sistema de previdência social e estabelece regras de transição e disposições transitórias.</li>
+                        <li><strong>Lei nº 9.717/1998:</strong> Dispõe sobre regras gerais para a organização e o funcionamento dos regimes próprios de previdência social.</li>
+                        <li><strong>Portaria MTP Nº 1.467/2022:</strong> Disciplina os parâmetros e as diretrizes gerais para organização e funcionamento dos RPPS.</li>
+                    </ul>
+                    
+                    <h4>Legislação Municipal (Exemplos)</h4>
+                    <ul>
+                        <li><strong>Lei Orgânica do Município de Itapipoca:</strong> Fundamento da administração pública local.</li>
+                        <li><strong>Lei Municipal nº 047/2008:</strong> Dispõe sobre a reestruturação do Regime Próprio de Previdência Social do Município de Itapipoca.</li>
+                    </ul>
                 </div>
 
                 <div id="telaConfiguracoes" style="display:none;">
                     <h2><i class="ri-settings-3-fill"></i> Configurações do Sistema</h2>
-                    <p> ... </p>
+                    <p>Ajuste os parâmetros utilizados na geração de documentos e outras funcionalidades do sistema.</p>
+                    <div class="form-grid">
+                        <label>Nome do Prefeito(a) Municipal:
+                            <input type="text" id="config-nome-prefeito" placeholder="Nome completo em maiúsculas">
+                        </label>
+                        <label>Nome do(a) Presidente do ITAPREV:
+                            <input type="text" id="config-nome-presidente" placeholder="Nome completo em maiúsculas">
+                        </label>
+                    </div>
+                    <button class="primary" onclick="salvarConfiguracoes(this)">
+                        <span class="button-text">Salvar Configurações</span>
+                        <span class="spinner"></span>
+                    </button>
                 </div>
 
                 <div id="telaCadastro" style="display:none;">
                     <h2><i class="ri-user-settings-fill"></i> Módulo de Gestão Cadastral</h2>
-                    <p> ... </p>
+                    <p>Este módulo está em desenvolvimento e será disponibilizado em futuras versões do sistema.</p>
                 </div>
                 
                 <div id="telaProcessos" style="display:none;">
                     <h2><i class="ri-node-tree"></i> Módulo de Acompanhamento de Processos</h2>
-                    <p> ... </p>
+                    <p>Este módulo está em desenvolvimento e será disponibilizado em futuras versões do sistema.</p>
                 </div>
 
                 <div id="telaFinanceiro" style="display:none;">
                     <h2><i class="ri-line-chart-fill"></i> Módulo Financeiro e Contribuições</h2>
-                    <p> ... </p>
+                    <p>Este módulo está em desenvolvimento e será disponibilizado em futuras versões do sistema.</p>
                 </div>
 
                 <div id="telaRelatorios" style="display:none;">
                     <h2><i class="ri-file-chart-fill"></i> Módulo de Relatórios e BI</h2>
-                    <p> ... </p>
+                    <p>Este módulo está em desenvolvimento e será disponibilizado em futuras versões do sistema.</p>
                 </div>
                 
                 <div id="telaUsuarios" style="display:none;">
                     <h2><i class="ri-shield-user-fill"></i> Gerenciamento de Usuários</h2>
-                    <p> ... </p>
+                    <p>Este módulo está em desenvolvimento e será disponibilizado em futuras versões do sistema.</p>
                 </div>
 
                 <input type="file" id="arquivoExcel" accept=".xlsx, .xls" style="display:none;" onchange="importarExcel()" />
@@ -262,8 +375,8 @@
 
             </div> 
             <footer>
-                <p>ITAPREV - Sistema de Gestão Previdenciária. Itapipoca-CE, 2025.</p>
-                <p><small>Desenvolvedor: Domingos Barroso Neto v3.1</small></p>
+                <p>PREVTECH - Sistema de Gestão Previdenciária. Itapipoca-CE, 2025.</p>
+                <p><small>Desenvolvido por PREVTECH - Soluções em Sistemas Previdenciários v4.2</small></p>
             </footer>
         </div>
 
@@ -287,4 +400,3 @@
 
 </body>
 </html>
-
