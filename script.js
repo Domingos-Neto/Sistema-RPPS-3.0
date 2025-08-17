@@ -43,7 +43,16 @@ const AppState = {
     simulacaoResultados: {},
     dashboardViewMode: 'meus_registros',
     currentStep: 1,
-    configuracoes: { nomePrefeito: '', nomePresidente: '' }
+    configuracoes: { 
+        nomePrefeito: '', 
+        nomePresidente: '',
+        ctcOrgao: '',
+        ctcCnpj: '',
+        ctcEmissorNome: '',
+        ctcEmissorMatricula: '',
+        ctcPresidenteCargo: '',
+        ctcPresidentePortaria: ''
+    }
 };
 
 const auth = {
@@ -851,32 +860,33 @@ function carregarConfiguracoes() {
             AppState.configuracoes = JSON.parse(configsSalvas);
         } catch (e) {
             console.error("Erro ao ler as configurações do localStorage. Usando valores padrão.", e);
-            AppState.configuracoes = { nomePrefeito: '', nomePresidente: '' };
         }
     }
 }
 
 function popularCamposConfiguracoes() {
-    const nomePrefeitoInput = document.getElementById('config-nome-prefeito');
-    const nomePresidenteInput = document.getElementById('config-nome-presidente');
-
-    if (nomePrefeitoInput) {
-        nomePrefeitoInput.value = AppState.configuracoes.nomePrefeito || '';
-    }
-    if (nomePresidenteInput) {
-        nomePresidenteInput.value = AppState.configuracoes.nomePresidente || '';
-    }
+    document.getElementById('config-nome-prefeito').value = AppState.configuracoes.nomePrefeito || '';
+    document.getElementById('config-nome-presidente').value = AppState.configuracoes.nomePresidente || '';
+    document.getElementById('config-ctc-orgao').value = AppState.configuracoes.ctcOrgao || '';
+    document.getElementById('config-ctc-cnpj').value = AppState.configuracoes.ctcCnpj || '';
+    document.getElementById('config-ctc-emissor-nome').value = AppState.configuracoes.ctcEmissorNome || '';
+    document.getElementById('config-ctc-emissor-matricula').value = AppState.configuracoes.ctcEmissorMatricula || '';
+    document.getElementById('config-ctc-presidente-cargo').value = AppState.configuracoes.ctcPresidenteCargo || '';
+    document.getElementById('config-ctc-presidente-portaria').value = AppState.configuracoes.ctcPresidentePortaria || '';
 }
 
 function salvarConfiguracoes(button) {
     ui.toggleSpinner(button, true);
     try {
-        const nomePrefeito = document.getElementById('config-nome-prefeito').value;
-        const nomePresidente = document.getElementById('config-nome-presidente').value;
-
         AppState.configuracoes = {
-            nomePrefeito: nomePrefeito.toUpperCase(),
-            nomePresidente: nomePresidente.toUpperCase()
+            nomePrefeito: document.getElementById('config-nome-prefeito').value.toUpperCase(),
+            nomePresidente: document.getElementById('config-nome-presidente').value.toUpperCase(),
+            ctcOrgao: document.getElementById('config-ctc-orgao').value,
+            ctcCnpj: document.getElementById('config-ctc-cnpj').value,
+            ctcEmissorNome: document.getElementById('config-ctc-emissor-nome').value,
+            ctcEmissorMatricula: document.getElementById('config-ctc-emissor-matricula').value,
+            ctcPresidenteCargo: document.getElementById('config-ctc-presidente-cargo').value,
+            ctcPresidentePortaria: document.getElementById('config-ctc-presidente-portaria').value
         };
 
         localStorage.setItem('itaprevConfiguracoes', JSON.stringify(AppState.configuracoes));
@@ -996,48 +1006,231 @@ function gerarAtoDeAposentadoria(b) {
     }
 }
 
-function gerarDocumentoCTC(b) {
-    ui.toggleSpinner(b, true);
+// NOVA FUNÇÃO GERAR CTC
+async function gerarDocumentoCTC(button) {
+    ui.toggleSpinner(button, true);
+
     try {
-        const dS = {
-            nome: document.getElementById("ctc-nomeServidor").value || "________________",
-            matricula: document.getElementById("ctc-matricula").value || "________________",
-            cpf: document.getElementById("ctc-cpf").value || "________________",
-            rg: document.getElementById("ctc-rg").value || "________________",
-            dataNascimento: formatarDataBR(document.getElementById("ctc-dataNascimento").value) || '__/__/____',
-            sexo: document.getElementById("ctc-sexo").options[document.getElementById("ctc-sexo").selectedIndex].text,
+        // 1. Coletar todos os dados dos formulários e configurações
+        const configs = AppState.configuracoes || {};
+        const dadosServidor = {
+            nome: document.getElementById("ctc-nomeServidor").value.toUpperCase() || "________________",
+            rg: document.getElementById("ctc-rg").value.toUpperCase() || "________________",
+            sexo: document.getElementById("ctc-sexo").value || "________________",
+            filiacao: document.getElementById("ctc-filiacao").value || "________________",
             cargo: document.getElementById("ctc-cargo").value || "________________",
             lotacao: document.getElementById("ctc-lotacao").value || "________________",
-            dataAdmissao: formatarDataBR(document.getElementById("ctc-dataAdmissao").value) || '__/__/____',
-            dataExoneracao: formatarDataBR(document.getElementById("ctc-dataExoneracao").value) || '__/__/____',
-            processo: document.getElementById("ctc-processo").value || "________________",
+            dataAdmissao: document.getElementById("ctc-dataAdmissao").value,
+            cnpj: configs.ctcCnpj || "00.000.000/0000-00",
+            cpf: document.getElementById("ctc-cpf").value || "________________",
+            dataNascimento: document.getElementById("ctc-dataNascimento").value,
+            pis_pasep: document.getElementById("ctc-pis_pasep").value || "________________",
+            matricula: document.getElementById("ctc-matricula").value || "________________",
+            dataRequerimento: document.getElementById("ctc-dataRequerimento").value,
         };
-        let rH = "";
-        Array.from(document.querySelectorAll("#corpo-tabela-periodos-ctc tr")).forEach(tr => {
-            const dI = formatarDataBR(tr.children[0]?.querySelector("input")?.value) || "",
-                dF = formatarDataBR(tr.children[1]?.querySelector("input")?.value) || "",
-                br = tr.children[2]?.querySelector("input")?.value || "0",
-                de = tr.children[3]?.querySelector("input")?.value || "0",
-                li = tr.children[4]?.querySelector("input")?.value || "0",
-                fo = tr.children[5]?.querySelector("input")?.value || "";
-            rH += `<tr><td>${dI}</td><td>${dF}</td><td>${br}</td><td>${de}</td><td>${li}</td><td>${fo}</td></tr>`;
-        });
-        const tTT = document.getElementById("total-tempo-ctc").innerText.replace("Total: ", "").split("\n")[0];
-        const nR = AppState.usuarioAtual.displayName.toUpperCase() || "________________";
-        const e = `<style>body{font-family:Arial,sans-serif;margin:40px;color:#333;font-size:11pt;}.container{max-width:800px;margin:auto;}.header,.footer{text-align:center;}.header h3{margin:0;}.header p{margin:5px 0;}.section{margin-top:25px;}.section h4{margin-top:0;margin-bottom:10px;padding-bottom:3px;border-bottom:1px solid #999;}.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 15px;}.info-grid span{font-weight:bold;}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:10pt;}th,td{border:1px solid #777;padding:6px;text-align:center;}th{background-color:#f0f0f0;}.footer p{margin:0;}.signature{margin-top:60px;}</style>`,
-            cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Certidão de Tempo de Contribuição</title>${e}</head><body><div class="container"><div class="header"><h3>CERTIDÃO DE TEMPO DE CONTRIBUIÇÃO</h3><p>Processo Administrativo Nº: ${dS.processo}</p></div><div class="section"><h4>I - DADOS DO SERVIDOR</h4><div class="info-grid"><p><span>Nome:</span> ${dS.nome}</p><p><span>Matrícula:</span> ${dS.matricula}</p><p><span>CPF:</span> ${dS.cpf}</p><p><span>RG:</span> ${dS.rg}</p><p><span>Data Nasc:</span> ${dS.dataNascimento}</p><p><span>Sexo:</span> ${dS.sexo}</p><p><span>Cargo Efetivo:</span> ${dS.cargo}</p><p><span>Lotação:</span> ${dS.lotacao}</p><p><span>Admissão:</span> ${dS.dataAdmissao}</p><p><span>Exoneração:</span> ${dS.dataExoneracao}</p></div></div><div class="section"><h4>II - PERÍODOS DE CONTRIBUIÇÃO</h4><table><thead><tr><th>Início</th><th>Fim</th><th>Tempo Bruto (dias)</th><th>Deduções (dias)</th><th>Tempo Líquido (dias)</th><th>Fonte / Obs.</th></tr></thead><tbody>${rH}</tbody><tfoot><tr><td colspan="4" style="text-align:right;font-weight:bold;">TEMPO LÍQUIDO TOTAL:</td><td style="font-weight:bold;">${tTT}</td><td></td></tr></tfoot></table></div><div class="section footer"><p>Certifico que as informações acima constam nos registros desta instituição.</p><div class="signature"><p>_________________________________________</p><p><b>${nR}</b></p></div></div></div></body></html>`;
-        const nA = window.open();
-        nA.document.open();
-        nA.document.write(cH);
-        nA.document.close();
-        ui.showToast("CTC gerada.", true);
-    } catch (er) {
-        console.error("Erro CTC:", er);
-        ui.showToast("Erro ao gerar a CTC.", false);
+
+        const periodosInput = Array.from(document.querySelectorAll("#corpo-tabela-periodos-ctc tr")).map(tr => ({
+            inicio: tr.querySelector('.ctc-inicio').value,
+            fim: tr.querySelector('.ctc-fim').value,
+            regime: tr.querySelector('.ctc-regime').value,
+            deducoes: parseInt(tr.querySelector('.ctc-deducoes').value) || 0,
+            fonte: tr.querySelector('.ctc-fonte').value,
+        }));
+        
+        // 2. Processar os períodos para o formato anual
+        const periodosProcessados = { RGPS: [], RPPS: [] };
+        let totalLiquidoRGPS = 0;
+        let totalLiquidoRPPS = 0;
+
+        for (const periodo of periodosInput) {
+            if (!periodo.inicio || !periodo.fim) continue;
+
+            let dataCorrente = new Date(periodo.inicio + 'T00:00:00');
+            const dataFinal = new Date(periodo.fim + 'T00:00:00');
+
+            while (dataCorrente <= dataFinal) {
+                const ano = dataCorrente.getFullYear();
+                const inicioAno = new Date(ano, 0, 1);
+                const fimAno = new Date(ano, 11, 31);
+
+                const periodoInicio = dataCorrente > inicioAno ? dataCorrente : inicioAno;
+                const periodoFim = dataFinal < fimAno ? dataFinal : fimAno;
+
+                const diffTime = periodoFim.getTime() - periodoInicio.getTime();
+                const tempoBruto = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                
+                const deducaoNesteAno = (periodoFim.getFullYear() === dataFinal.getFullYear()) ? periodo.deducoes : 0;
+                const tempoLiquido = tempoBruto - deducaoNesteAno;
+
+                const linhaProcessada = {
+                    ano: ano,
+                    periodoStr: `${periodoInicio.toLocaleDateString('pt-BR')} a ${periodoFim.toLocaleDateString('pt-BR')}`,
+                    regime: periodo.regime,
+                    tempoApurado: tempoBruto,
+                    deducoes: deducaoNesteAno,
+                    tempoLiquido: tempoLiquido,
+                    fonte: periodo.fonte
+                };
+
+                periodosProcessados[periodo.regime].push(linhaProcessada);
+                if(periodo.regime === 'RGPS') totalLiquidoRGPS += tempoLiquido;
+                else totalLiquidoRPPS += tempoLiquido;
+                
+                dataCorrente = new Date(ano + 1, 0, 1);
+            }
+        }
+        
+        // 3. Montar as tabelas HTML
+        const criarTabelaHTML = (titulo, dados, subtotal) => {
+            if (dados.length === 0) return '';
+            let rows = dados.map(d => `
+                <tr>
+                    <td>${d.ano}</td>
+                    <td>${d.periodoStr.replace(/ a /g, ' à ')}</td>
+                    <td>${d.regime}</td>
+                    <td>${d.tempoApurado}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>${d.tempoLiquido}</td>
+                </tr>`).join('');
+            
+            return `
+                <h4 class="table-title">${titulo}</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ano</th>
+                            <th>Período</th>
+                            <th>Regime</th>
+                            <th>Tempo Apurado</th>
+                            <th>Faltas</th>
+                            <th>Licenças</th>
+                            <th>Outros</th>
+                            <th>Tempo Líquido</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7" class="subtotal-label">SUBTOTAL</td>
+                            <td class="subtotal-value">${subtotal}</td>
+                        </tr>
+                    </tfoot>
+                </table>`;
+        };
+        const tabelaRGPS_HTML = criarTabelaHTML('REGIME GERAL DE PREVIDÊNCIA SOCIAL', periodosProcessados.RGPS, totalLiquidoRGPS);
+        const tabelaRPPS_HTML = criarTabelaHTML('REGIME PRÓPRIO DE PREVIDÊNCIA SOCIAL', periodosProcessados.RPPS, totalLiquidoRPPS);
+        const primeiroPeriodoRGPS = periodosProcessados.RGPS[0];
+        const ultimoPeriodoRGPS = periodosProcessados.RGPS[periodosProcessados.RGPS.length - 1];
+        const primeiroPeriodoRPPS = periodosProcessados.RPPS[0];
+        const ultimoPeriodoRPPS = periodosProcessados.RPPS[periodosProcessados.RPPS.length - 1];
+        
+        // 4. Calcular totais e formatar textos
+        const totalGeralDias = totalLiquidoRGPS + totalLiquidoRPPS;
+        const { anos, meses, dias } = diasParaAnosMesesDias(totalGeralDias);
+        const totalExtenso = `${anos} anos, ${meses} meses e ${dias} dias`;
+        const dataEmissao = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+        
+        // 5. Gerar o HTML final do documento
+        const htmlFinal = `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <title>CTC - ${dadosServidor.nome}</title>
+            <style>
+                body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #000; background: #fff; margin: 1cm; }
+                .container { width: 100%; border: 1px solid #000; padding: 1cm; }
+                .header { text-align: center; font-weight: bold; }
+                .header h3 { margin: 0; font-size: 14pt; }
+                .header h4 { margin: 15px 0; font-size: 12pt; }
+                .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 15px; margin: 15px 0; }
+                .info-grid p { margin: 0; }
+                .info-grid span { font-weight: bold; }
+                .periodo-summary p { margin: 2px 0; }
+                .table-title { margin-top: 20px; font-weight: bold; text-align: center; }
+                table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 20px;}
+                th, td { border: 1px solid #000; padding: 4px; text-align: center; }
+                th { font-weight: bold; }
+                .subtotal-label { text-align: right; font-weight: bold; }
+                .subtotal-value { font-weight: bold; }
+                .certifico { margin-top: 25px; text-align: justify; }
+                .data-local { text-align: center; margin-top: 50px; }
+                .assinaturas { margin-top: 80px; display: flex; justify-content: space-around; text-align: center; }
+                .assinatura-block p { margin: 0; font-size: 10pt; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h3>INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA</h3>
+                    <h4>CERTIDÃO DE TEMPO DE CONTRIBUIÇÃO N.º ___/${new Date().getFullYear()}</h4>
+                </div>
+                <div class="info-grid">
+                    <div><p><span>Órgão Expedidor:</span> ${configs.ctcOrgao || 'ITAPREV'}</p></div>
+                    <div><p><span>CNPJ:</span> ${dadosServidor.cnpj}</p></div>
+                    <div style="grid-column: 1 / -1;"><p><span>Nome do(a) Servidor(a):</span> ${dadosServidor.nome}</p></div>
+                    <div><p><span>CPF:</span> ${dadosServidor.cpf}</p></div>
+                    <div><p><span>RG/Órgão Expedidor:</span> ${dadosServidor.rg}</p></div>
+                    <div><p><span>Data de Nascimento:</span> ${formatarDataBR(dadosServidor.dataNascimento)}</p></div>
+                    <div><p><span>Sexo:</span> ${dadosServidor.sexo}</p></div>
+                    <div><p><span>PIS/PASEP:</span> ${dadosServidor.pis_pasep}</p></div>
+                    <div><p><span>Matrícula:</span> ${dadosServidor.matricula}</p></div>
+                    <div style="grid-column: 1 / -1;"><p><span>Filiação:</span> ${dadosServidor.filiacao}</p></div>
+                    <div><p><span>Cargo Efetivo:</span> ${dadosServidor.cargo}</p></div>
+                    <div><p><span>Órgão Lotação:</span> ${dadosServidor.lotacao}</p></div>
+                    <div><p><span>Data de Admissão:</span> ${formatarDataBR(dadosServidor.dataAdmissao)}</p></div>
+                    <div><p><span>Data de Requerimento:</span> ${formatarDataBR(dadosServidor.dataRequerimento)}</p></div>
+                </div>
+                <div class="periodo-summary">
+                    <p><b>PERÍODOS DE CONTRIBUIÇÃO COMPREENDIDOS NESTA CERTIDÃO:</b></p>
+                    ${tabelaRGPS_HTML ? `<p>RGPS - ${primeiroPeriodoRGPS.periodoStr.split(' a ')[0]} à ${ultimoPeriodoRGPS.periodoStr.split(' a ')[1]} - MUNICÍPIO DE ITAPIPOCA, AVERBADO CONFORME DISCRIMINADO ABAIXO;</p>` : ''}
+                    ${tabelaRPPS_HTML ? `<p>RPPS - ${primeiroPeriodoRPPS.periodoStr.split(' a ')[0]} à ${ultimoPeriodoRPPS.periodoStr.split(' a ')[1]} - MUNICÍPIO DE ITAPIPOCA, CONFORME DISCRIMINADO ABAIXO.</p>` : ''}
+                </div>
+                
+                ${tabelaRGPS_HTML}
+                ${tabelaRPPS_HTML}
+
+                <div class="certifico">
+                    <p>CERTIFICO, em face do apurado, que o(a) interessado(a) conta, de efetivo exercício público no município, <b>${totalGeralDias} dias</b>, correspondentes a <b>${totalExtenso}</b>.</p>
+                    <p>CERTIFICO, que a Lei nº: 047/2008 assegura aos servidores do Município de ITAPIPOCA-CE, Aposentadorias e Pensão, com aproveitamento de tempo de contribuição para outro Regime, na forma de contagem recíproca.</p>
+                </div>
+                
+                <p class="data-local">Itapipoca-CE, ${dataEmissao}.</p>
+
+                <div class="assinaturas">
+                    <div class="assinatura-block">
+                        <p>_________________________________________</p>
+                        <p><b>${configs.ctcEmissorNome || 'NOME DO EMISSOR'}</b></p>
+                        <p>Agente Administrativo</p>
+                        <p>Matrícula: ${configs.ctcEmissorMatricula || '000.000-0'}</p>
+                    </div>
+                    <div class="assinatura-block">
+                        <p>_________________________________________</p>
+                        <p><b>${configs.nomePresidente || 'NOME DO PRESIDENTE'}</b></p>
+                        <p>${configs.ctcPresidenteCargo || 'Presidente'}</p>
+                        <p>Portaria: ${configs.ctcPresidentePortaria || 'Nº 000/0000'}</p>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>`;
+
+        const newWindow = window.open();
+        newWindow.document.open();
+        newWindow.document.write(htmlFinal);
+        newWindow.document.close();
+        ui.showToast("Documento CTC gerado com sucesso!", true);
+
+    } catch (error) {
+        console.error("Erro ao gerar a CTC:", error);
+        ui.showToast("Ocorreu um erro ao gerar o documento.", false);
     } finally {
-        ui.toggleSpinner(b, false);
+        ui.toggleSpinner(button, false);
     }
 }
+
 
 function calculateValorLiquido(pB) {
     if (pB <= 0) {
@@ -1448,12 +1641,19 @@ function salvarCTC() {
             rg: document.getElementById('ctc-rg').value,
             dataNascimento: document.getElementById('ctc-dataNascimento').value,
             sexo: document.getElementById('ctc-sexo').value,
+            pis_pasep: document.getElementById('ctc-pis_pasep').value,
+            filiacao: document.getElementById('ctc-filiacao').value,
             cargo: document.getElementById('ctc-cargo').value,
             lotacao: document.getElementById('ctc-lotacao').value,
             dataAdmissao: document.getElementById('ctc-dataAdmissao').value,
-            dataExoneracao: document.getElementById('ctc-dataExoneracao').value,
-            processo: document.getElementById('ctc-processo').value,
-            periodos: Array.from(document.querySelectorAll("#corpo-tabela-periodos-ctc tr")).map(l => ({ inicio: l.querySelector('.ctc-inicio').value, fim: l.querySelector('.ctc-fim').value, deducoes: l.querySelector('.ctc-deducoes').value, fonte: l.querySelector('.ctc-fonte').value }))
+            dataRequerimento: document.getElementById('ctc-dataRequerimento').value,
+            periodos: Array.from(document.querySelectorAll("#corpo-tabela-periodos-ctc tr")).map(l => ({ 
+                inicio: l.querySelector('.ctc-inicio').value, 
+                fim: l.querySelector('.ctc-fim').value, 
+                regime: l.querySelector('.ctc-regime').value,
+                deducoes: l.querySelector('.ctc-deducoes').value, 
+                fonte: l.querySelector('.ctc-fonte').value 
+            }))
         }
     };
     const ch = `ctcs_salvas_${AppState.usuarioAtual.uid}`;
@@ -1498,21 +1698,22 @@ function carregarCTC(id) {
     handleNavClick(null, 'geradorCTC');
     setTimeout(() => {
         const d = cE.dados;
-        document.getElementById('ctc-nomeServidor').value = d.nomeServidor;
-        document.getElementById('ctc-matricula').value = d.matricula;
-        document.getElementById('ctc-cpf').value = d.cpf;
-        document.getElementById('ctc-rg').value = d.rg;
-        document.getElementById('ctc-dataNascimento').value = d.dataNascimento;
-        document.getElementById('ctc-sexo').value = d.sexo;
-        document.getElementById('ctc-cargo').value = d.cargo;
-        document.getElementById('ctc-lotacao').value = d.lotacao;
-        document.getElementById('ctc-dataAdmissao').value = d.dataAdmissao;
-        document.getElementById('ctc-dataExoneracao').value = d.dataExoneracao;
-        document.getElementById('ctc-processo').value = d.processo;
+        document.getElementById('ctc-nomeServidor').value = d.nomeServidor || '';
+        document.getElementById('ctc-matricula').value = d.matricula || '';
+        document.getElementById('ctc-cpf').value = d.cpf || '';
+        document.getElementById('ctc-rg').value = d.rg || '';
+        document.getElementById('ctc-dataNascimento').value = d.dataNascimento || '';
+        document.getElementById('ctc-sexo').value = d.sexo || '';
+        document.getElementById('ctc-pis_pasep').value = d.pis_pasep || '';
+        document.getElementById('ctc-filiacao').value = d.filiacao || '';
+        document.getElementById('ctc-cargo').value = d.cargo || '';
+        document.getElementById('ctc-lotacao').value = d.lotacao || '';
+        document.getElementById('ctc-dataAdmissao').value = d.dataAdmissao || '';
+        document.getElementById('ctc-dataRequerimento').value = d.dataRequerimento || '';
         const t = document.getElementById('corpo-tabela-periodos-ctc');
         t.innerHTML = '';
-        if (d.periodos) d.periodos.forEach(p => adicionarLinhaPeriodoCTC(p.inicio, p.fim, p.deducoes, p.fonte));
-        calcularTempoPeriodosCTC();
+        if (d.periodos) d.periodos.forEach(p => adicionarLinhaPeriodoCTC(p.inicio, p.fim, p.regime, p.deducoes, p.fonte));
+        calcularTempoTotalCTC();
         ui.showToast(`CTC "${cE.nome}" carregada.`, true);
     }, 100);
 }
@@ -1538,49 +1739,52 @@ function limparFormularioCTC() {
     calcularTempoTotalCTC();
 }
 
-function adicionarLinhaPeriodoCTC(i = '', f = '', d = '0', fo = '') {
-    const t = document.getElementById('corpo-tabela-periodos-ctc'),
-        l = document.createElement('tr');
-    l.innerHTML = `<td><input type="date" class="ctc-inicio" onchange="calcularTempoPeriodosCTC()" value="${i}"></td><td><input type="date" class="ctc-fim" onchange="calcularTempoPeriodosCTC()" value="${f}"></td><td><input type="number" class="ctc-bruto" readonly></td><td><input type="number" class="ctc-deducoes" value="${d}" oninput="calcularTempoPeriodosCTC()"></td><td><input type="number" class="ctc-liquido" readonly></td><td><input type="text" class="ctc-fonte" value="${fo}" placeholder="Ex: ITAPREV"></td><td><button class="danger btn-tabela" onclick="removerLinhaPeriodoCTC(this)">Remover</button></td>`;
+function adicionarLinhaPeriodoCTC(i = '', f = '', regime = 'RGPS', d = '0', fo = '') {
+    const t = document.getElementById('corpo-tabela-periodos-ctc');
+    const l = document.createElement('tr');
+    
+    l.innerHTML = `
+        <td><input type="date" class="ctc-inicio" onchange="calcularTempoTotalCTC()" value="${i}"></td>
+        <td><input type="date" class="ctc-fim" onchange="calcularTempoTotalCTC()" value="${f}"></td>
+        <td>
+            <select class="ctc-regime">
+                <option value="RGPS" ${regime === 'RGPS' ? 'selected' : ''}>RGPS</option>
+                <option value="RPPS" ${regime === 'RPPS' ? 'selected' : ''}>RPPS</option>
+            </select>
+        </td>
+        <td><input type="number" class="ctc-deducoes" value="${d}" oninput="calcularTempoTotalCTC()"></td>
+        <td><input type="text" class="ctc-fonte" value="${fo}" placeholder="Ex: MUNICÍPIO DE ITAPIPOCA"></td>
+        <td><button class="danger btn-tabela" onclick="removerLinhaPeriodoCTC(this)">Remover</button></td>
+    `;
     t.appendChild(l);
+    calcularTempoTotalCTC();
 }
+
 
 function removerLinhaPeriodoCTC(b) {
     b.closest('tr').remove();
     calcularTempoTotalCTC();
 }
 
-function calcularTempoPeriodosCTC() {
-    document.querySelectorAll("#corpo-tabela-periodos-ctc tr").forEach(l => {
-        const iE = l.querySelector('.ctc-inicio'),
-            fE = l.querySelector('.ctc-fim'),
-            bE = l.querySelector('.ctc-bruto'),
-            dE = l.querySelector('.ctc-deducoes'),
-            lE = l.querySelector('.ctc-liquido');
-        if (iE.value && fE.value) {
-            const i = new Date(iE.value + 'T00:00:00'),
-                f = new Date(fE.value + 'T00:00:00');
-            if (f >= i) {
-                const dT = Math.abs(f - i),
-                    dD = Math.ceil(dT / 86400000) + 1;
-                bE.value = dD;
-                const d = parseInt(dE.value) || 0;
-                lE.value = dD - d;
-            } else {
-                bE.value = 0;
-                lE.value = 0;
-            }
-        } else {
-            bE.value = '';
-            lE.value = '';
-        }
-    });
-    calcularTempoTotalCTC();
-}
 
 function calcularTempoTotalCTC() {
     let tD = 0;
-    document.querySelectorAll("#corpo-tabela-periodos-ctc .ctc-liquido").forEach(i => tD += parseInt(i.value) || 0);
+    document.querySelectorAll("#corpo-tabela-periodos-ctc tr").forEach(linha => {
+        const inicioStr = linha.querySelector('.ctc-inicio').value;
+        const fimStr = linha.querySelector('.ctc-fim').value;
+        const deducoes = parseInt(linha.querySelector('.ctc-deducoes').value) || 0;
+
+        if (inicioStr && fimStr) {
+            const inicio = new Date(inicioStr + 'T00:00:00');
+            const fim = new Date(fimStr + 'T00:00:00');
+            if (fim >= inicio) {
+                const diffTime = Math.abs(fim - inicio);
+                const tempoBruto = Math.ceil(diffTime / 86400000) + 1;
+                tD += (tempoBruto - deducoes);
+            }
+        }
+    });
+
     const { anos, meses, dias } = diasParaAnosMesesDias(tD);
     document.getElementById('total-tempo-ctc').innerHTML = `Total: <b>${tD}</b> dias<br><small>(${anos}a, ${meses}m, ${dias}d)</small>`;
     return tD;
@@ -1589,10 +1793,10 @@ function calcularTempoTotalCTC() {
 function diasParaAnosMesesDias(tD) {
     if (isNaN(tD) || tD < 0) return { anos: 0, meses: 0, dias: 0 };
     let d = Math.floor(tD);
-    const a = Math.floor(d / 365.25); // Usar 365.25 para mais precisão em períodos longos
-    d %= 365.25;
-    const m = Math.floor(d / 30.4375); // Média de dias no mês
-    d %= 30.4375;
+    const a = Math.floor(d / 365.25);
+    d -= a * 365.25;
+    const m = Math.floor(d / 30.4375);
+    d -= m * 30.4375;
     return { anos: a, meses: m, dias: Math.round(d) };
 }
 
@@ -1819,10 +2023,10 @@ Object.assign(window, {
     calcularBeneficio, adicionarLinhaProvento, calculateTotalProventos, excluirLinhaProvento,
     adicionarLinhaDependente, removerLinhaDependente, salvarSimulacaoHistorico, imprimirSimulacao,
     exportarTudoZIP, gerarAtoDeAposentadoria, gerarAtoDePensao, carregarDoHistorico, excluirDoHistorico,
-    adicionarLinhaPeriodoCTC, calcularTempoPeriodosCTC, removerLinhaPeriodoCTC, salvarCTC, gerarDocumentoCTC,
+    adicionarLinhaPeriodoCTC, calcularTempoTotalCTC, removerLinhaPeriodoCTC, salvarCTC, gerarDocumentoCTC,
     carregarCTC, excluirCTC, alternarTema,
     salvarConfiguracoes,
     calcularTempoEntreDatas, limparCalculoTempo,
     buscarEPreencherFatores,
-    adicionarPeriodoExterno, removerPeriodoExterno // <-- Adicionando novas funções à janela global
+    adicionarPeriodoExterno, removerPeriodoExterno
 });
