@@ -629,3 +629,48 @@ body.dark-mode .dashboard-card i {
   margin-left: auto;
   margin-right: auto;
 }
+/* ============================================= */
+/* ESTILOS ADICIONAIS PARA CORREÇÃO DE LAYOUT    */
+/* ============================================= */
+.form-grid-span-all {
+  grid-column: 1 / -1;
+}
+
+.tempo-externo-container {
+  background-color: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+.tempo-externo-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+}
+
+.tempo-externo-inputs label {
+  flex-grow: 1; /* Faz os inputs de data ocuparem o espaço disponível */
+}
+
+.tempo-externo-inputs button {
+  flex-shrink: 0; /* Impede que o botão encolha */
+  margin-top: 0;
+  margin-bottom: 0; /* Alinha com os inputs */
+}
+
+#tabela-tempo-externo {
+  margin-top: 10px;
+}
+
+#total-tempo-externo {
+  text-align: right;
+  font-weight: bold;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+}
