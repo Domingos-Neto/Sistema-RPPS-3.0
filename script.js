@@ -351,13 +351,13 @@ function atualizarDataHora() {
 function validaCPF(inputElement, statusElement) {
     const cpf = inputElement.value.replace(/[^\d]/g, '');
     const setInvalid = () => {
-        inputElement.style.borderColor = 'var(--danger-color)';
+        inputElement.style.borderColor = 'var(--cor-erro)';
         statusElement.textContent = 'CPF Inválido';
-        statusElement.style.color = 'var(--danger-color)';
+        statusElement.style.color = 'var(--cor-erro)';
         return false;
     };
     if (cpf.length === 0) {
-        inputElement.style.borderColor = 'var(--border-color)';
+        inputElement.style.borderColor = 'var(--cor-borda)';
         statusElement.textContent = '';
         return;
     }
@@ -372,9 +372,9 @@ function validaCPF(inputElement, statusElement) {
     resto = (soma * 10) % 11;
     if ((resto === 10) || (resto === 11)) resto = 0;
     if (resto !== parseInt(cpf.substring(10, 11))) return setInvalid();
-    inputElement.style.borderColor = 'var(--success-color)';
+    inputElement.style.borderColor = 'var(--cor-sucesso)';
     statusElement.textContent = 'CPF Válido';
-    statusElement.style.color = 'var(--success-color)';
+    statusElement.style.color = 'var(--cor-sucesso)';
     return true;
 }
 
@@ -515,9 +515,11 @@ function limparFormularioCompleto() {
     
     document.getElementById("tempoExterno").value = "0";
     document.getElementById("tempoEspecial").value = "0";
-    
-    // LINHA NOVA PARA LIMPAR O CAMPO NOVO
     document.getElementById("tempoContribuicaoEfetivoDias").value = "0";
+    
+    // Limpar tabela de tempo externo
+    document.getElementById('corpo-tabela-tempo-externo').innerHTML = '';
+    atualizarTotalTempoExterno();
 
     document.getElementById('corpo-tabela-proventos-ato').innerHTML = '';
     calculateTotalProventos();
@@ -556,7 +558,7 @@ function adicionarLinha(mes = '', fator = '', salario = '') {
     const vF = parseFloat(fator) || 0,
         vS = parseFloat(salario) || 0,
         vA = vF * vS > 0 ? (vF * vS).toFixed(2) : '';
-    linha.innerHTML = `<td>${tbody.rows.length + 1}</td><td><input type="text" placeholder="MM/AAAA" value="${mes}"/></td><td><input type="number" step="0.000001" class="fator" value="${fator}" oninput="atualizarSalarioLinha(this)"/></td><td><input type="number" step="0.01" class="salario" value="${salario}" oninput="atualizarSalarioLinha(this)"/></td><td><input type="number" class="atualizado" value="${vA}" readonly/></td><td><button class="danger" style="margin:0;padding:5px;" onclick="excluirLinha(this)">Excluir</button></td>`;
+    linha.innerHTML = `<td>${tbody.rows.length + 1}</td><td><input type="text" placeholder="MM/AAAA" value="${mes}"/></td><td><input type="number" step="0.000001" class="fator" value="${fator}" oninput="atualizarSalarioLinha(this)"/></td><td><input type="number" step="0.01" class="salario" value="${salario}" oninput="atualizarSalarioLinha(this)"/></td><td><input type="number" class="atualizado" value="${vA}" readonly/></td><td><button class="danger btn-tabela" onclick="excluirLinha(this)">Excluir</button></td>`;
     tbody.appendChild(linha);
     const aC = document.querySelector('#passo2 .accordion-content');
     if (aC && aC.style.maxHeight) aC.style.maxHeight = aC.scrollHeight + "px";
@@ -588,7 +590,7 @@ function atualizarSalarioLinha(i) {
 function adicionarLinhaProvento(d = '', v = '') {
     const t = document.getElementById("corpo-tabela-proventos-ato"),
         l = document.createElement("tr");
-    l.innerHTML = `<td><input type="text" class="provento-descricao" placeholder="Descrição" value="${d}"/></td><td><input type="number" step="0.01" class="provento-valor" placeholder="0.00" value="${v}" oninput="calculateTotalProventos()"/></td><td><button class="danger" style="margin:0;padding:5px;" onclick="excluirLinhaProvento(this)">Excluir</button></td>`;
+    l.innerHTML = `<td><input type="text" class="provento-descricao" placeholder="Descrição" value="${d}"/></td><td><input type="number" step="0.01" class="provento-valor" placeholder="0.00" value="${v}" oninput="calculateTotalProventos()"/></td><td><button class="danger btn-tabela" onclick="excluirLinhaProvento(this)">Excluir</button></td>`;
     t.appendChild(l);
 }
 
@@ -609,7 +611,7 @@ function calculateTotalProventos() {
 function adicionarLinhaDependente(n = '', d = '', p = '', inv = 'Nao') {
     const t = document.getElementById('corpo-tabela-dependentes'),
         l = document.createElement('tr');
-    l.innerHTML = `<td><input type="text" class="dependente-nome" value="${n}"></td><td><input type="date" class="dependente-dataNasc" value="${d}"></td><td><select class="dependente-parentesco"><option ${p==='Cônjuge'?'selected':''}>Cônjuge</option><option ${p==='Companheiro(a)'?'selected':''}>Companheiro(a)</option><option ${p==='Filho(a)'?'selected':''}>Filho(a)</option><option ${p==='Filho(a) Inválido(a)'?'selected':''}>Filho(a) Inválido(a)</option><option ${p==='Mãe'?'selected':''}>Mãe</option><option ${p==='Pai'?'selected':''}>Pai</option></select></td><td><select class="dependente-invalido"><option value="Nao" ${inv==='Nao'?'selected':''}>Não</option><option value="Sim" ${inv==='Sim'?'selected':''}>Sim</option></select></td><td><button class="danger" style="margin:0;padding:5px;" onclick="removerLinhaDependente(this)">Remover</button></td>`;
+    l.innerHTML = `<td><input type="text" class="dependente-nome" value="${n}"></td><td><input type="date" class="dependente-dataNasc" value="${d}"></td><td><select class="dependente-parentesco"><option ${p==='Cônjuge'?'selected':''}>Cônjuge</option><option ${p==='Companheiro(a)'?'selected':''}>Companheiro(a)</option><option ${p==='Filho(a)'?'selected':''}>Filho(a)</option><option ${p==='Filho(a) Inválido(a)'?'selected':''}>Filho(a) Inválido(a)</option><option ${p==='Mãe'?'selected':''}>Mãe</option><option ${p==='Pai'?'selected':''}>Pai</option></select></td><td><select class="dependente-invalido"><option value="Nao" ${inv==='Nao'?'selected':''}>Não</option><option value="Sim" ${inv==='Sim'?'selected':''}>Sim</option></select></td><td><button class="danger btn-tabela" onclick="removerLinhaDependente(this)">Remover</button></td>`;
     t.appendChild(l);
 }
 
@@ -719,14 +721,12 @@ function calcularBeneficio(n = true, b = null) {
                         dC = `Cálculo com base em 100% da média salarial, por se tratar de incapacidade decorrente de acidente de trabalho, doença profissional ou do trabalho.`;
                     } else {
                         if (dataInicioIncapacidade < dataReforma) {
-                            // CORREÇÃO: Busca o valor do novo campo de tempo efetivo em dias.
                             const tempoEmDias = parseInt(document.getElementById('tempoContribuicaoEfetivoDias').value) || 0;
 
-                            // Adiciona uma verificação para garantir que o campo foi preenchido
                             if (tempoEmDias === 0) {
                                 ui.showToast("Para a regra antiga, informe o 'Tempo de Contribuição Efetivo (dias)'.", false);
                                 if (b) ui.toggleSpinner(b, false);
-                                return; // Interrompe o cálculo
+                                return;
                             }
 
                             const media80 = calcularMedia80Maiores(s);
@@ -735,7 +735,6 @@ function calcularBeneficio(n = true, b = null) {
                             
                             vB = media80 * fatorProporcional;
                             
-                            // O texto do resultado agora usará o tempo em dias correto
                             dC = `Cálculo pela REGRA ANTIGA (EC 41/2003) por direito adquirido (DII < 13/11/2019). <br><b>Média dos 80% maiores salários:</b> ${formatarDinheiro(media80)}. <br><b>Fator de Proporcionalidade:</b> (${tempoEmDias} / ${tempoExigidoEmDias} dias).`;
                         }
                         else {
@@ -795,8 +794,8 @@ function calcularBeneficio(n = true, b = null) {
             rD.innerHTML = `<h3>Resultado do Cálculo (Bruto)</h3><p><b>Tipo:</b> ${AppState.simulacaoResultados.tipo}</p>${m>0?`<p><b>Média Salarial de Contribuição:</b> ${formatarDinheiro(AppState.simulacaoResultados.mediaSalarial)}</p>`:''}<p><b>Fundamento do Cálculo:</b> ${AppState.simulacaoResultados.descricao}</p><p style="font-size:1.2em;font-weight:bold;">💰 Valor Bruto do Benefício: ${formatarDinheiro(AppState.simulacaoResultados.valorBeneficioFinal)}</p>`;
             calculateValorLiquido(vB);
 
-            document.getElementById('containerAtoAposentadoriaBtn').style.display = isA ? 'block' : 'none';
-            document.getElementById('containerAtoPensaoBtn').style.display = isP ? 'block' : 'none';
+            document.getElementById('btnGerarAtoAposentadoria').style.display = isA ? 'inline-flex' : 'none';
+            document.getElementById('btnGerarAtoPensao').style.display = isP ? 'inline-flex' : 'none';
 
             if (s.length > 0) desenharGrafico(s, m);
 
@@ -1053,7 +1052,6 @@ function calculateValorLiquido(pB) {
     document.getElementById('resultadoLiquido').innerHTML = html;
 }
 
-// ############# INÍCIO DO CÓDIGO CORRIGIDO (VERSÃO 4) #############
 function projetarAposentadoria(mS) {
     const rPD = document.getElementById('resultadoProjecao');
     const dN = new Date(document.getElementById('dataNascimento').value + 'T00:00:00');
@@ -1191,7 +1189,6 @@ function verificarAbonoPermanencia() {
 
     rAD.innerHTML = i >= iM && tC >= tM ? `<h3>✅ Abono de Permanência</h3><p>O servidor <b>cumpriu os requisitos</b> para aposentadoria voluntária na data de hoje e, ao permanecer em atividade, tem direito ao Abono de Permanência.</p>` : '';
 }
-// ############# FIM DO CÓDIGO CORRIGIDO (VERSÃO 4) #############
 
 function desenharGrafico(s, m) {
     const ctx = document.getElementById("graficoSalarios").getContext("2d");
@@ -1305,14 +1302,24 @@ function salvarSimulacaoHistorico(nF) {
 }
 
 function coletarDadosSimulacao() {
-    const d = { passo1: {}, tabela: [], proventosAto: [], dependentes: [], resultados: AppState.simulacaoResultados };
-    document.querySelectorAll('#passo1 input,#passo1 select,#passo1 textarea').forEach(e => { if (e.id) d.passo1[e.id] = e.value; });
+    const d = { passo1: {}, tabela: [], proventosAto: [], dependentes: [], resultados: AppState.simulacaoResultados, periodosExternos: [] };
+    document.querySelectorAll('#passo1 input:not([type=hidden]),#passo1 select,#passo1 textarea').forEach(e => { if (e.id) d.passo1[e.id] = e.value; });
+    
     document.querySelectorAll("#corpo-tabela tr").forEach(l => {
         const i = l.querySelectorAll("input");
         d.tabela.push([i[0].value, i[1].value, i[2].value]);
     });
     document.querySelectorAll("#corpo-tabela-proventos-ato tr").forEach(l => d.proventosAto.push({ descricao: l.querySelector(".provento-descricao").value, valor: l.querySelector(".provento-valor").value }));
     document.querySelectorAll("#corpo-tabela-dependentes tr").forEach(l => d.dependentes.push({ nome: l.querySelector('.dependente-nome').value, dataNasc: l.querySelector('.dependente-dataNasc').value, parentesco: l.querySelector('.dependente-parentesco').value, invalido: l.querySelector('.dependente-invalido').value }));
+    
+    // Coletar períodos externos
+    document.querySelectorAll("#corpo-tabela-tempo-externo tr").forEach(row => {
+        d.periodosExternos.push({
+            inicio: row.dataset.inicio,
+            fim: row.dataset.fim
+        });
+    });
+
     return d;
 }
 
@@ -1333,7 +1340,7 @@ function listarHistorico() {
         tR.forEach(r => {
             const i = document.createElement("li"),
                 dF = new Date(r.data || Date.now()).toLocaleString('pt-BR');
-            i.innerHTML = `<div class="item-info"><span>${r.nome}</span><small>${dF}</small></div><div class="item-actions"><button onclick="carregarDoHistorico('${r.id}')" title="Carregar"><i class="ri-folder-open-line"></i></button><button class="danger" onclick="excluirDoHistorico('${r.id}')" title="Excluir"><i class="ri-delete-bin-line"></i></button></div>`;
+            i.innerHTML = `<div class="item-info"><span>${r.nome}</span><small>${dF}</small></div><div class="item-actions"><button onclick="carregarDoHistorico('${r.id}')" title="Carregar"><i class="ri-folder-open-line"></i></button><button class="danger btn-tabela" onclick="excluirDoHistorico('${r.id}')" title="Excluir"><i class="ri-delete-bin-line"></i></button></div>`;
             l.appendChild(i);
         });
     }
@@ -1348,6 +1355,7 @@ function carregarDoHistorico(id) {
     const d = rE.dados;
     handleNavClick(null, 'simulacao');
     setTimeout(() => {
+        limparFormularioCompleto(); // Limpa o formulário antes de carregar
         for (const k in d.passo1) {
             const e = document.getElementById(k);
             if (e) e.value = d.passo1[k];
@@ -1362,6 +1370,12 @@ function carregarDoHistorico(id) {
             document.getElementById('corpo-tabela-dependentes').innerHTML = '';
             d.dependentes.forEach(dep => adicionarLinhaDependente(dep.nome, dep.dataNasc, dep.parentesco, dep.invalido));
         }
+        
+        // Carregar períodos externos
+        if(d.periodosExternos) {
+            d.periodosExternos.forEach(p => adicionarPeriodoExterno(p.inicio, p.fim));
+        }
+
         AppState.simulacaoResultados = d.resultados || {};
         alternarCamposBeneficio();
         ui.showToast(`Simulação "${rE.nome}" carregada.`, true);
@@ -1436,7 +1450,7 @@ function listarCTCsSalvas() {
             const li = document.createElement("li"),
                 dF = new Date(c.data || Date.now()).toLocaleString('pt-BR'),
                 nS = c.dados.nomeServidor || 'Não informado';
-            li.innerHTML = `<div class="item-info"><span>${c.nome}</span><small>${nS} - ${dF}</small></div><div class="item-actions"><button onclick="carregarCTC('${c.id}')" title="Carregar"><i class="ri-folder-open-line"></i></button><button class="danger" onclick="excluirCTC('${c.id}')" title="Excluir"><i class="ri-delete-bin-line"></i></button></div>`;
+            li.innerHTML = `<div class="item-info"><span>${c.nome}</span><small>${nS} - ${dF}</small></div><div class="item-actions"><button onclick="carregarCTC('${c.id}')" title="Carregar"><i class="ri-folder-open-line"></i></button><button class="danger btn-tabela" onclick="excluirCTC('${c.id}')" title="Excluir"><i class="ri-delete-bin-line"></i></button></div>`;
             l.appendChild(li);
         });
     }
@@ -1487,14 +1501,14 @@ function limparFormularioCTC() {
     document.querySelectorAll('#geradorCTC input,#geradorCTC select').forEach(i => i.value = '');
     document.getElementById('corpo-tabela-periodos-ctc').innerHTML = '';
     document.getElementById('ctc-cpf-status').textContent = '';
-    document.getElementById('ctc-cpf').style.borderColor = 'var(--border-color)';
+    document.getElementById('ctc-cpf').style.borderColor = 'var(--cor-borda)';
     calcularTempoTotalCTC();
 }
 
 function adicionarLinhaPeriodoCTC(i = '', f = '', d = '0', fo = '') {
     const t = document.getElementById('corpo-tabela-periodos-ctc'),
         l = document.createElement('tr');
-    l.innerHTML = `<td><input type="date" class="ctc-inicio" onchange="calcularTempoPeriodosCTC()" value="${i}"></td><td><input type="date" class="ctc-fim" onchange="calcularTempoPeriodosCTC()" value="${f}"></td><td><input type="number" class="ctc-bruto" readonly></td><td><input type="number" class="ctc-deducoes" value="${d}" oninput="calcularTempoPeriodosCTC()"></td><td><input type="number" class="ctc-liquido" readonly></td><td><input type="text" class="ctc-fonte" value="${fo}" placeholder="Ex: ITAPREV"></td><td><button class="danger" style="margin:0;padding:5px;" onclick="removerLinhaPeriodoCTC(this)">Remover</button></td>`;
+    l.innerHTML = `<td><input type="date" class="ctc-inicio" onchange="calcularTempoPeriodosCTC()" value="${i}"></td><td><input type="date" class="ctc-fim" onchange="calcularTempoPeriodosCTC()" value="${f}"></td><td><input type="number" class="ctc-bruto" readonly></td><td><input type="number" class="ctc-deducoes" value="${d}" oninput="calcularTempoPeriodosCTC()"></td><td><input type="number" class="ctc-liquido" readonly></td><td><input type="text" class="ctc-fonte" value="${fo}" placeholder="Ex: ITAPREV"></td><td><button class="danger btn-tabela" onclick="removerLinhaPeriodoCTC(this)">Remover</button></td>`;
     t.appendChild(l);
 }
 
@@ -1542,11 +1556,11 @@ function calcularTempoTotalCTC() {
 function diasParaAnosMesesDias(tD) {
     if (isNaN(tD) || tD < 0) return { anos: 0, meses: 0, dias: 0 };
     let d = Math.floor(tD);
-    const a = Math.floor(d / 365);
-    d %= 365;
-    const m = Math.floor(d / 30);
-    d %= 30;
-    return { anos: a, meses: m, dias: d };
+    const a = Math.floor(d / 365.25); // Usar 365.25 para mais precisão em períodos longos
+    d %= 365.25;
+    const m = Math.floor(d / 30.4375); // Média de dias no mês
+    d %= 30.4375;
+    return { anos: a, meses: m, dias: Math.round(d) };
 }
 
 function exportarTudoZIP(b) {
@@ -1586,7 +1600,7 @@ function calcularTempoEntreDatas() {
     const resultadoContainer = document.getElementById('resultado-calculo-tempo');
 
     if (!dataInicioStr || !dataFimStr) {
-        resultadoContainer.innerHTML = `<p style="color: var(--danger-color); margin: auto;">Por favor, preencha ambas as datas.</p>`;
+        resultadoContainer.innerHTML = `<p style="color: var(--cor-erro); margin: auto;">Por favor, preencha ambas as datas.</p>`;
         ui.showToast("Por favor, preencha ambas as datas.", false);
         return;
     }
@@ -1595,7 +1609,7 @@ function calcularTempoEntreDatas() {
     const dataFim = new Date(dataFimStr + 'T00:00:00');
 
     if (dataFim < dataInicio) {
-        resultadoContainer.innerHTML = `<p style="color: var(--danger-color); margin: auto;">A data final não pode ser anterior à data inicial.</p>`;
+        resultadoContainer.innerHTML = `<p style="color: var(--cor-erro); margin: auto;">A data final não pode ser anterior à data inicial.</p>`;
         ui.showToast("A data final não pode ser anterior à data inicial.", false);
         return;
     }
@@ -1605,7 +1619,7 @@ function calcularTempoEntreDatas() {
     const { anos, meses, dias } = diasParaAnosMesesDias(totalDias);
 
     resultadoContainer.innerHTML = `
-        <p style="margin:0; font-weight:bold; color: var(--primary-dark);">Resultado do Cálculo:</p>
+        <p style="margin:0; font-weight:bold; color: var(--prevtech-azul-escuro);">Resultado do Cálculo:</p>
         <p style="margin:5px 0 0 0;"><strong>Período:</strong> ${anos} anos, ${meses} meses e ${dias} dias.</p>
         <p style="margin:5px 0 0 0;"><strong>Total em dias:</strong> ${totalDias.toLocaleString('pt-BR')} dias.</p>
     `;
@@ -1617,9 +1631,6 @@ function limparCalculoTempo() {
     document.getElementById('resultado-calculo-tempo').innerHTML = '';
 }
 
-// =================================================================================
-// INÍCIO DA FUNÇÃO CORRIGIDA: USANDO API DO BANCO CENTRAL (BCB) E COM VALIDAÇÃO
-// =================================================================================
 async function buscarEPreencherFatores(button) {
     ui.toggleSpinner(button, true);
     ui.showToast("Buscando índices no Banco Central (BCB)...", true);
@@ -1637,7 +1648,6 @@ async function buscarEPreencherFatores(button) {
             throw new Error("Tabela vazia.");
         }
 
-        // Define a data de competência (mês anterior ao do cálculo) de forma segura
         const dataCalculo = new Date(dataCalculoStr + 'T00:00:00');
         let dataCompetencia = new Date(dataCalculo.getFullYear(), dataCalculo.getMonth(), 1);
         dataCompetencia.setMonth(dataCompetencia.getMonth() - 1);
@@ -1645,11 +1655,9 @@ async function buscarEPreencherFatores(button) {
         const anoCompetencia = dataCompetencia.getFullYear();
         const mesCompetencia = dataCompetencia.getMonth() + 1;
 
-        // Formata a data final para a API (último dia do mês de competência)
         const ultimoDiaCompetencia = new Date(anoCompetencia, mesCompetencia, 0).getDate();
         const dataFinalParaAPI = `${ultimoDiaCompetencia}/${mesCompetencia}/${anoCompetencia}`;
 
-        // Código 433 = INPC (IBGE) no sistema SGS do Banco Central
         const urlApiBCB = `https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=json&dataInicial=01/07/1994&dataFinal=${dataFinalParaAPI}`;
 
         const response = await fetch(urlApiBCB);
@@ -1658,11 +1666,10 @@ async function buscarEPreencherFatores(button) {
         const dadosApi = await response.json();
         if (!dadosApi || dadosApi.length === 0) throw new Error("API do BCB não retornou dados.");
 
-        // Usa um Map para maior performance e segurança na busca de chaves
         const indicesMap = new Map();
         dadosApi.forEach(item => {
             const [dia, mes, ano] = item.data.split('/');
-            const chave = `${ano}${mes}`; // Chave no formato YYYYMM
+            const chave = `${ano}${mes}`;
             indicesMap.set(chave, parseFloat(item.valor));
         });
 
@@ -1688,10 +1695,9 @@ async function buscarEPreencherFatores(button) {
                     if (indiceSalario) {
                         let fator = indiceCompetenciaFinal / indiceSalario;
                         
-                        // Validação para evitar valores inválidos (negativos, zero, ou absurdamente altos)
                         if (isNaN(fator) || fator <= 0 || fator > 50) {
                             console.warn(`Fator inválido calculado para ${chaveSalario}: ${fator}. Usando 1.0 como padrão.`);
-                            fator = 1.0; // Valor padrão em caso de erro
+                            fator = 1.0;
                             errosNoCalculo++;
                         }
                         
@@ -1714,10 +1720,65 @@ async function buscarEPreencherFatores(button) {
         ui.toggleSpinner(button, false);
     }
 }
-// =================================================================================
-// FIM DA FUNÇÃO CORRIGIDA
-// =================================================================================
 
+// =================================================================================
+// INÍCIO DAS NOVAS FUNÇÕES - MÓDULO DE TEMPO EXTERNO
+// =================================================================================
+function adicionarPeriodoExterno(inicio = '', fim = '') {
+    const dataInicioInput = document.getElementById('te-data-inicio');
+    const dataFimInput = document.getElementById('te-data-fim');
+    
+    const dataInicioStr = inicio || dataInicioInput.value;
+    const dataFimStr = fim || dataFimInput.value;
+
+    if (!dataInicioStr || !dataFimStr) {
+        return ui.showToast("Preencha a data de início e fim do período.", false);
+    }
+
+    const dataInicio = new Date(dataInicioStr + 'T00:00:00');
+    const dataFim = new Date(dataFimStr + 'T00:00:00');
+
+    if (dataFim < dataInicio) {
+        return ui.showToast("A data final não pode ser anterior à data inicial.", false);
+    }
+
+    const diffTime = Math.abs(dataFim - dataInicio);
+    const totalDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    const tbody = document.getElementById('corpo-tabela-tempo-externo');
+    const newRow = tbody.insertRow();
+    newRow.dataset.inicio = dataInicioStr;
+    newRow.dataset.fim = dataFimStr;
+
+    newRow.innerHTML = `
+        <td>${formatarDataBR(dataInicioStr, false)}</td>
+        <td>${formatarDataBR(dataFimStr, false)}</td>
+        <td class="dias-periodo">${totalDias}</td>
+        <td><button class="danger btn-tabela" onclick="removerPeriodoExterno(this)">Excluir</button></td>
+    `;
+    
+    // Limpa os campos de data e atualiza o total
+    dataInicioInput.value = '';
+    dataFimInput.value = '';
+    atualizarTotalTempoExterno();
+}
+
+function removerPeriodoExterno(button) {
+    button.closest('tr').remove();
+    atualizarTotalTempoExterno();
+}
+
+function atualizarTotalTempoExterno() {
+    let totalDias = 0;
+    const linhas = document.querySelectorAll('#corpo-tabela-tempo-externo tr');
+    linhas.forEach(linha => {
+        const dias = parseInt(linha.querySelector('.dias-periodo').textContent) || 0;
+        totalDias += dias;
+    });
+
+    document.getElementById('total-tempo-externo').textContent = `Total de Dias: ${totalDias}`;
+    document.getElementById('tempoExterno').value = totalDias;
+}
 
 Object.assign(window, {
     auth, ui, handleNavClick, atualizarDashboardView, irParaPasso, alternarCamposBeneficio,
@@ -1729,5 +1790,6 @@ Object.assign(window, {
     carregarCTC, excluirCTC, alternarTema,
     salvarConfiguracoes,
     calcularTempoEntreDatas, limparCalculoTempo,
-    buscarEPreencherFatores
+    buscarEPreencherFatores,
+    adicionarPeriodoExterno, removerPeriodoExterno // <-- Adicionando novas funções à janela global
 });
