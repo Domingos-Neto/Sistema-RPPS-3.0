@@ -320,21 +320,54 @@ function atualizarDashboardView() {
 
 function formatarDinheiro(valor) { return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 
-function formatarDataBR(dataString, plusDay = true) {
-    if (!dataString) return "";
+// =================================================================================
+// FUNÇÕES DE DATA CORRIGIDAS
+// =================================================================================
+/**
+ * Formata uma string de data (YYYY-MM-DD) para o formato brasileiro (DD/MM/YYYY).
+ * Trata a data como local para evitar erros de fuso horário.
+ */
+function formatarDataBR(dataString) {
+    if (!dataString || !dataString.includes('-')) return "";
     try {
-        const date = new Date(dataString);
-        if (plusDay) date.setUTCDate(date.getUTCDate() + 1);
-        return date.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-    } catch (e) { return dataString; }
+        const [year, month, day] = dataString.split('-');
+        // Constrói a data com componentes para garantir que seja tratada como local
+        const date = new Date(year, month - 1, day);
+        return date.toLocaleDateString('pt-BR');
+    } catch (e) {
+        return dataString;
+    }
 }
 
+/**
+ * Formata uma data (string YYYY-MM-DD ou objeto Date) por extenso em português.
+ * Garante que a data seja tratada como local para evitar erros de fuso horário.
+ */
 function formatarDataPorExtenso(data) {
     if (!data) return '';
-    const date = new Date(data);
-    date.setUTCDate(date.getUTCDate() + 1);
-    return date.toLocaleString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    
+    let dateObj;
+    // Se a data for uma string do tipo "YYYY-MM-DD", converte para um objeto Date local
+    if (typeof data === 'string' && data.includes('-')) {
+        const [year, month, day] = data.split('-');
+        dateObj = new Date(year, month - 1, day);
+    } else {
+        // Se já for um objeto Date ou outro formato, tenta converter diretamente
+        dateObj = new Date(data);
+    }
+    
+    // Verifica se a data é válida antes de formatar
+    if (isNaN(dateObj.getTime())) {
+        return '';
+    }
+
+    return dateObj.toLocaleDateString('pt-BR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
 }
+// =================================================================================
 
 function atualizarDataHora() {
     const container = document.getElementById('datetime-container');
@@ -858,7 +891,7 @@ function salvarConfiguracoes(button) {
 }
 
 // =================================================================================
-// FUNÇÕES DE GERAÇÃO DE DOCUMENTOS
+// FUNÇÕES DE GERAÇÃO DE DOCUMENTOS (ATUALIZADAS)
 // =================================================================================
 
 function gerarAtoDePensao(b) {
@@ -875,9 +908,9 @@ function gerarAtoDePensao(b) {
             cargoServidor: document.getElementById('cargoServidor').value.toUpperCase() || '________________',
             cpfServidor: document.getElementById('cpfServidor').value || '________________',
             matriculaServidor: document.getElementById('matriculaServidor').value || '________________',
-            dataObito: formatarDataBR(document.getElementById('dataObito').value, false) || '__/__/____',
+            dataObito: formatarDataBR(document.getElementById('dataObito').value) || '__/__/____',
             valorBeneficio: AppState.simulacaoResultados.valorBeneficioFinal || 0,
-            dataAtual: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }),
+            dataAtual: formatarDataPorExtenso(new Date()),
             nomeDiretor: AppState.configuracoes.nomePresidente || 'PRESIDENTE DO ITAPREV'
         };
         const vE = valorPorExtenso(d.valorBeneficio) + " reais",
@@ -921,9 +954,9 @@ function gerarAtoDeAposentadoria(b) {
                 cargaHoraria: document.getElementById('cargaHorariaServidor').value || '________________',
                 cargo: document.getElementById('cargoServidor').value.toUpperCase() || '________________',
                 lotacao: document.getElementById('lotacaoServidor').value.toUpperCase() || '________________',
-                admissao: formatarDataBR(document.getElementById('dataAdmissao').value, true) || '__/__/____',
+                admissao: formatarDataBR(document.getElementById('dataAdmissao').value) || '__/__/____',
                 fundamentoLegal: document.getElementById('fundamentoLegalPersonalizado').value.replace(/\n/g, '<br>') || '________________',
-                dataAtual: formatarDataPorExtenso(document.getElementById('dataCalculo').value) || formatarDataPorExtenso(new Date().toISOString().split('T')[0]),
+                dataAtual: formatarDataPorExtenso(document.getElementById('dataCalculo').value || new Date()),
             };
         let tA = '',
             pR = '';
@@ -971,18 +1004,18 @@ function gerarDocumentoCTC(b) {
             matricula: document.getElementById("ctc-matricula").value || "________________",
             cpf: document.getElementById("ctc-cpf").value || "________________",
             rg: document.getElementById("ctc-rg").value || "________________",
-            dataNascimento: formatarDataBR(document.getElementById("ctc-dataNascimento").value, false) || '__/__/____',
+            dataNascimento: formatarDataBR(document.getElementById("ctc-dataNascimento").value) || '__/__/____',
             sexo: document.getElementById("ctc-sexo").options[document.getElementById("ctc-sexo").selectedIndex].text,
             cargo: document.getElementById("ctc-cargo").value || "________________",
             lotacao: document.getElementById("ctc-lotacao").value || "________________",
-            dataAdmissao: formatarDataBR(document.getElementById("ctc-dataAdmissao").value, false) || '__/__/____',
-            dataExoneracao: formatarDataBR(document.getElementById("ctc-dataExoneracao").value, false) || '__/__/____',
+            dataAdmissao: formatarDataBR(document.getElementById("ctc-dataAdmissao").value) || '__/__/____',
+            dataExoneracao: formatarDataBR(document.getElementById("ctc-dataExoneracao").value) || '__/__/____',
             processo: document.getElementById("ctc-processo").value || "________________",
         };
         let rH = "";
         Array.from(document.querySelectorAll("#corpo-tabela-periodos-ctc tr")).forEach(tr => {
-            const dI = formatarDataBR(tr.children[0]?.querySelector("input")?.value, false) || "",
-                dF = formatarDataBR(tr.children[1]?.querySelector("input")?.value, false) || "",
+            const dI = formatarDataBR(tr.children[0]?.querySelector("input")?.value) || "",
+                dF = formatarDataBR(tr.children[1]?.querySelector("input")?.value) || "",
                 br = tr.children[2]?.querySelector("input")?.value || "0",
                 de = tr.children[3]?.querySelector("input")?.value || "0",
                 li = tr.children[4]?.querySelector("input")?.value || "0",
@@ -1751,8 +1784,8 @@ function adicionarPeriodoExterno(inicio = '', fim = '') {
     newRow.dataset.fim = dataFimStr;
 
     newRow.innerHTML = `
-        <td>${formatarDataBR(dataInicioStr, false)}</td>
-        <td>${formatarDataBR(dataFimStr, false)}</td>
+        <td>${formatarDataBR(dataInicioStr)}</td>
+        <td>${formatarDataBR(dataFimStr)}</td>
         <td class="dias-periodo">${totalDias}</td>
         <td><button class="danger btn-tabela" onclick="removerPeriodoExterno(this)">Excluir</button></td>
     `;
