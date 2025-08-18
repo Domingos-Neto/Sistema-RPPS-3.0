@@ -774,19 +774,10 @@ function calcularBeneficio(n = true, b = null) {
                             const media80 = calcularMedia80Maiores(s);
                             const tempoExigidoEmDias = 9125; // 25 anos
                             const fatorProporcional = tempoEmDias / tempoExigidoEmDias;
-                            const valorCalculado = media80 * fatorProporcional;
                             
-                            vB = valorCalculado; // Atribui o valor proporcional calculado
+                            vB = media80 * fatorProporcional;
                             
-                            // Inicia a descrição do cálculo
                             dC = `Cálculo pela REGRA ANTIGA (EC 41/2003) por direito adquirido (DII < 13/11/2019). <br><b>Média dos 80% maiores salários:</b> ${formatarDinheiro(media80)}. <br><b>Fator de Proporcionalidade:</b> (${tempoEmDias} / ${tempoExigidoEmDias} dias).`;
-
-                            // Bloco de código corrigido: Verifica se o valor é inferior ao salário mínimo e ajusta se necessário
-                            if (vB < SALARIO_MINIMO) {
-                                vB = SALARIO_MINIMO;
-                                dC += `<br><b>Ajuste Constitucional:</b> O valor proporcional calculado (${formatarDinheiro(valorCalculado)}) foi elevado para o salário mínimo vigente, em conformidade com o Art. 201, § 2º, da Constituição Federal.`;
-                            }
-
                         }
                         else {
                             const anosExcedentes = Math.max(0, Math.floor(tempoContribTotalAnos) - 20);
