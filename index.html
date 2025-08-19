@@ -105,23 +105,7 @@
                         <div class="dashboard-card" onclick="handleNavClick(event, 'simulacao')"><i class="ri-add-circle-line"></i><span>Nova Simulação de Benefício</span></div>
                         <div class="dashboard-card" onclick="handleNavClick(event, 'geradorCTC')"><i class="ri-file-text-line"></i><span>Gerar Certidão (CTC)</span></div>
                         <div class="dashboard-card" onclick="handleNavClick(event, 'telaLegislacao')"><i class="ri-book-open-line"></i><span>Acessar Legislação</span></div>
-                        
-                        <div class="dashboard-card" style="text-align: left; align-items: flex-start; cursor: default;">
-                            <h4 style="margin-top:0; display:flex; align-items:center; gap:8px; border:none; font-size: 1.1em;">
-                                <i class="ri-time-line" style="font-size: 1.5rem; margin-bottom:0;"></i>
-                                <span style="color: var(--cor-texto);">Calculadora de Tempo</span>
-                            </h4>
-                            <p style="font-size:0.9em; margin-top: 5px; margin-bottom:15px; color: var(--cor-texto-secundario);">Calcule o tempo entre duas datas.</p>
-                            <div style="width:100%; display:grid; gap:10px;">
-                                <label style="font-size:0.9em;">Data Início: <input type="date" id="calc-data-inicio" style="padding:8px;"></label>
-                                <label style="font-size:0.9em;">Data Fim: <input type="date" id="calc-data-fim" style="padding:8px;"></label>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <button id="btn-limpar-tempo" class="secondary" style="margin-top:0;">Limpar</button>
-                                    <button id="btn-calcular-tempo" class="primary" style="margin-top:0;">Calcular</button>
-                                </div>
-                            </div>
-                            <div id="resultado-calculo-tempo" style="margin-top:15px; background: var(--cor-fundo); padding:10px; border-radius:6px; width:100%; min-height:75px; font-size: 0.9em;"></div>
-                        </div>
+                        <div class="dashboard-card" onclick="handleNavClick(event, 'telaConfiguracoes')"><i class="ri-settings-3-line"></i><span>Configurações</span></div>
 
                         <div class="dashboard-card" style="grid-column: 1 / -1; align-items: flex-start; text-align: left;">
                             <h4 style="margin-top:0; display:flex; align-items:center; gap:8px; border:none; font-size: 1.1em;">
@@ -511,9 +495,32 @@
 </div>
 
 <div id="floating-buttons-container" style="display:none;">
+    <button id="btnOpenTimeCalc" class="floating-btn" title="Calculadora de Tempo">
+        <i class="ri-time-line"></i>
+    </button>
     <a id="btnWhatsapp" class="floating-btn" href="https://wa.me/5588997139954" target="_blank" title="Contato via WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
+</div>
+
+<div id="time-calc-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <button id="btnCloseTimeCalc" class="modal-close">&times;</button>
+        <h4 style="margin-top:0; display:flex; align-items:center; gap:8px; border:none; font-size: 1.1em;">
+            <i class="ri-time-line" style="font-size: 1.5rem; margin-bottom:0;"></i>
+            <span style="color: var(--cor-texto);">Calculadora de Tempo</span>
+        </h4>
+        <p style="font-size:0.9em; margin-top: 5px; margin-bottom:15px; color: var(--cor-texto-secundario);">Calcule o tempo entre duas datas.</p>
+        <div style="width:100%; display:grid; gap:10px;">
+            <label style="font-size:0.9em;">Data Início: <input type="date" id="calc-data-inicio" style="padding:8px;"></label>
+            <label style="font-size:0.9em;">Data Fim: <input type="date" id="calc-data-fim" style="padding:8px;"></label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="btn-limpar-tempo" class="secondary" style="margin-top:0;">Limpar</button>
+                <button id="btn-calcular-tempo" class="primary" style="margin-top:0;">Calcular</button>
+            </div>
+        </div>
+        <div id="resultado-calculo-tempo" style="margin-top:15px; background: var(--cor-fundo); padding:10px; border-radius:6px; width:100%; min-height:75px; font-size: 0.9em;"></div>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
