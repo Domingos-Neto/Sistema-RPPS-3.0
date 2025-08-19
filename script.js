@@ -964,7 +964,6 @@ function gerarAtoDePensao(b) {
                 .resolve{text-align:center;font-weight:bold;margin:2em 0;border:none;}
                 .artigo{margin-top:15px;} .cumpra-se{text-align:center;margin-top:60px;} .data-local{text-align:center;margin-top:40px;}
                 .assinatura{text-align:center; margin-top:80px;}
-                .footer-text{text-align:center; font-size:9pt; line-height:1.2; margin-top:auto; padding-top:20px; color: #444;}
                 @media print{body{padding:0;}}
                 </style>`,
             cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Pensão Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container">
@@ -982,10 +981,6 @@ function gerarAtoDePensao(b) {
                 <p class="cumpra-se">REGISTRE-SE, PUBLIQUE-SE E CUMPRA-SE.</p>
                 <p class="data-local">Itapipoca-CE, ${d.dataAtual}.</p>
                 <div class="assinatura"><p>_________________________________________</p><p class="bold uppercase">${d.nomeDiretor}</p><p>Diretor Presidente do ITAPREV</p></div>
-            </div>
-            <div class="footer-text">
-                 <p style="margin:0; font-weight:bold;">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA</p>
-                 <p style="margin:0;">(88) 3631-0204</p>
             </div>
             </div></body></html>`;
         const nA = window.open();
@@ -1054,7 +1049,6 @@ function gerarAtoDeAposentadoria(b) {
             .header-ato{text-align:center; font-weight:bold; margin-bottom: 2cm;}
             .proventos-table{width:100%;border-collapse:collapse;margin:20px 0;border:1px solid black;}.proventos-table th,.proventos-table td{border:1px solid black;padding:5px;}.proventos-table th{background-color:#e0e0e0;text-align:center;}.proventos-table tfoot td{font-weight:bold; text-align:right;}
             .signature-container{display:flex; justify-content:space-around; margin-top:60px; text-align:center;} .signature-block p{margin:0;line-height:1.2;}
-            .footer-text{text-align:center; font-size:9pt; line-height:1.2; margin-top:auto; padding-top:20px; color: #444;}
             @media print{body{padding:0;}}
             </style>`,
             cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Aposentadoria Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container">
@@ -1072,12 +1066,6 @@ function gerarAtoDeAposentadoria(b) {
                     <div class="signature-block"><p>_________________________________________</p><p>${AppState.configuracoes.nomePrefeito || 'NOME DO PREFEITO(A)'}</p><p>Prefeito Municipal</p></div>
                     <div class="signature-block"><p>_________________________________________</p><p>${AppState.configuracoes.nomePresidente || 'NOME DO(A) PRESIDENTE'}</p><p>Presidente do ITAPREV</p></div>
                 </div>
-            </div>
-            <div class="footer-text">
-                <p style="margin:0; font-weight:bold;">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA</p>
-                <p style="margin:0;">Rua Caio Prado, 730, São Sebastião-Itapipoca-CE-Brasil</p>
-                <p style="margin:0;">CEP: 62508-200-CNPJ: 10575544/0001-35</p>
-                <p style="margin:0;">(88) 3631-0204 | rppsitaprev@gmail.com | www.itaprev.com.br</p>
             </div>
             </div></body></html>`;
         const nA = window.open();
@@ -2037,6 +2025,7 @@ Object.assign(window, {
     buscarEPreencherFatores,
     adicionarPeriodoExterno, removerPeriodoExterno
 });
+
 
 
 
