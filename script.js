@@ -49,6 +49,7 @@ const AppState = {
         ctcOrgao: '',
         ctcCnpj: '',
         ctcEmissorNome: '',
+        ctcEmissorCargo: '',
         ctcEmissorMatricula: '',
         ctcPresidenteCargo: '',
         ctcPresidentePortaria: ''
@@ -733,7 +734,7 @@ function calcularBeneficio(n = true, b = null) {
 
             if (isA) {
                  const dataCalculo = document.getElementById('dataCalculo').value ? new Date(document.getElementById('dataCalculo').value + 'T00:00:00') : new Date();
-                 const dataAdmissao = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
+                 const dataAdmissao = new Date(document.getElementById('dataAdmissão').value + 'T00:00:00');
                  const tempoServicoPublico = (dataCalculo - dataAdmissao) / 31557600000;
                  const tempoExternoAnos = (parseInt(document.getElementById('tempoExterno').value) || 0) / 365.25;
                  const tempoEspecialAnos = (parseInt(document.getElementById('tempoEspecial').value) || 0) / 365.25;
@@ -870,6 +871,7 @@ function popularCamposConfiguracoes() {
     document.getElementById('config-ctc-orgao').value = AppState.configuracoes.ctcOrgao || '';
     document.getElementById('config-ctc-cnpj').value = AppState.configuracoes.ctcCnpj || '';
     document.getElementById('config-ctc-emissor-nome').value = AppState.configuracoes.ctcEmissorNome || '';
+    document.getElementById('config-ctc-emissor-cargo').value = AppState.configuracoes.ctcEmissorCargo || '';
     document.getElementById('config-ctc-emissor-matricula').value = AppState.configuracoes.ctcEmissorMatricula || '';
     document.getElementById('config-ctc-presidente-cargo').value = AppState.configuracoes.ctcPresidenteCargo || '';
     document.getElementById('config-ctc-presidente-portaria').value = AppState.configuracoes.ctcPresidentePortaria || '';
@@ -884,6 +886,7 @@ function salvarConfiguracoes(button) {
             ctcOrgao: document.getElementById('config-ctc-orgao').value,
             ctcCnpj: document.getElementById('config-ctc-cnpj').value,
             ctcEmissorNome: document.getElementById('config-ctc-emissor-nome').value,
+            ctcEmissorCargo: document.getElementById('config-ctc-emissor-cargo').value,
             ctcEmissorMatricula: document.getElementById('config-ctc-emissor-matricula').value,
             ctcPresidenteCargo: document.getElementById('config-ctc-presidente-cargo').value,
             ctcPresidentePortaria: document.getElementById('config-ctc-presidente-portaria').value
@@ -1006,7 +1009,6 @@ function gerarAtoDeAposentadoria(b) {
     }
 }
 
-// CORREÇÃO: Função modificada para ajustar as colunas da tabela
 async function gerarDocumentoCTC(button) {
     ui.toggleSpinner(button, true);
 
@@ -1102,12 +1104,12 @@ async function gerarDocumentoCTC(button) {
                     <thead>
                         <tr>
                             <th style="width: 8%;">Ano</th>
-                            <th style="width: 28%;">Período</th>
+                            <th style="width: 32%;">Período</th>
                             <th style="width: 10%;">Regime</th>
                             <th style="width: 12%;">Tempo Apurado</th>
-                            <th style="width: 8%;">Faltas</th>
-                            <th style="width: 8%;">Licenças</th>
-                            <th style="width: 8%;">Outros</th>
+                            <th style="width: 6%;">Faltas</th>
+                            <th style="width: 6%;">Licenças</th>
+                            <th style="width: 6%;">Outros</th>
                             <th style="width: 12%;">Tempo Líquido</th>
                         </tr>
                     </thead>
@@ -1141,25 +1143,25 @@ async function gerarDocumentoCTC(button) {
             <meta charset="UTF-8">
             <title>CTC - ${dadosServidor.nome}</title>
             <style>
-                body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #000; background: #fff; margin: 1cm; }
-                .container { width: 100%; border: 1px solid #000; padding: 1cm; }
+                body { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4; color: #000; background: #fff; margin: 0.5cm; }
+                .container { width: 100%; border: 1px solid #000; padding: 1cm; box-sizing: border-box; }
                 .header { text-align: center; font-weight: bold; }
-                .header h3 { margin: 0; font-size: 14pt; }
-                .header h4 { margin: 15px 0; font-size: 12pt; }
-                .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 15px; margin: 15px 0; }
+                .header h3 { margin: 0; font-size: 13pt; }
+                .header h4 { margin: 15px 0; font-size: 11pt; }
+                .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 15px; margin: 15px 0; font-size: 9.5pt; }
                 .info-grid p { margin: 0; }
                 .info-grid span { font-weight: bold; }
-                .periodo-summary p { margin: 2px 0; }
-                .table-title { margin-top: 20px; font-weight: bold; text-align: center; }
-                table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 20px;}
-                th, td { border: 1px solid #000; padding: 4px; text-align: center; }
+                .periodo-summary p { margin: 2px 0; font-size: 9.5pt; }
+                .table-title { margin-top: 20px; font-weight: bold; text-align: center; font-size: 10pt;}
+                table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 15px;}
+                th, td { border: 1px solid #000; padding: 3px; text-align: center; }
                 th { font-weight: bold; }
                 .subtotal-label { text-align: right; font-weight: bold; }
                 .subtotal-value { font-weight: bold; }
                 .certifico { margin-top: 25px; text-align: justify; }
-                .data-local { text-align: center; margin-top: 50px; }
-                .assinaturas { margin-top: 80px; display: flex; justify-content: space-around; text-align: center; }
-                .assinatura-block p { margin: 0; font-size: 10pt; }
+                .data-local { text-align: center; margin-top: 40px; }
+                .assinaturas { margin-top: 70px; display: flex; justify-content: space-around; text-align: center; }
+                .assinatura-block p { margin: 0; font-size: 9pt; }
             </style>
         </head>
         <body>
@@ -1204,8 +1206,8 @@ async function gerarDocumentoCTC(button) {
                     <div class="assinatura-block">
                         <p>_________________________________________</p>
                         <p><b>${configs.ctcEmissorNome || 'NOME DO EMISSOR'}</b></p>
-                        <p>Agente Administrativo</p>
-                        <p>Matrícula: ${configs.ctcEmissorMatricula || '000.000-0'}</p>
+                        <p>${configs.ctcEmissorCargo || 'Cargo/Função'}</p>
+                        <p>Matrícula: ${configs.ctcEmissorMatricula || 'N/D'}</p>
                     </div>
                     <div class="assinatura-block">
                         <p>_________________________________________</p>
