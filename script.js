@@ -50,7 +50,8 @@ const AppState = {
         ctcCnpj: '',
         ctcEmissorNome: '',
         ctcEmissorCargo: '',
-        ctcEmissorMatricula: '',
+        ctcEmissorVinculoLabel: '',
+        ctcEmissorVinculoValor: '',
         ctcPresidenteCargo: '',
         ctcPresidentePortaria: ''
     }
@@ -872,7 +873,8 @@ function popularCamposConfiguracoes() {
     document.getElementById('config-ctc-cnpj').value = AppState.configuracoes.ctcCnpj || '';
     document.getElementById('config-ctc-emissor-nome').value = AppState.configuracoes.ctcEmissorNome || '';
     document.getElementById('config-ctc-emissor-cargo').value = AppState.configuracoes.ctcEmissorCargo || '';
-    document.getElementById('config-ctc-emissor-matricula').value = AppState.configuracoes.ctcEmissorMatricula || '';
+    document.getElementById('config-ctc-emissor-vinculo-label').value = AppState.configuracoes.ctcEmissorVinculoLabel || 'Matrícula';
+    document.getElementById('config-ctc-emissor-vinculo-valor').value = AppState.configuracoes.ctcEmissorVinculoValor || '';
     document.getElementById('config-ctc-presidente-cargo').value = AppState.configuracoes.ctcPresidenteCargo || '';
     document.getElementById('config-ctc-presidente-portaria').value = AppState.configuracoes.ctcPresidentePortaria || '';
 }
@@ -887,7 +889,8 @@ function salvarConfiguracoes(button) {
             ctcCnpj: document.getElementById('config-ctc-cnpj').value,
             ctcEmissorNome: document.getElementById('config-ctc-emissor-nome').value,
             ctcEmissorCargo: document.getElementById('config-ctc-emissor-cargo').value,
-            ctcEmissorMatricula: document.getElementById('config-ctc-emissor-matricula').value,
+            ctcEmissorVinculoLabel: document.getElementById('config-ctc-emissor-vinculo-label').value,
+            ctcEmissorVinculoValor: document.getElementById('config-ctc-emissor-vinculo-valor').value,
             ctcPresidenteCargo: document.getElementById('config-ctc-presidente-cargo').value,
             ctcPresidentePortaria: document.getElementById('config-ctc-presidente-portaria').value
         };
@@ -1207,7 +1210,7 @@ async function gerarDocumentoCTC(button) {
                         <p>_________________________________________</p>
                         <p><b>${configs.ctcEmissorNome || 'NOME DO EMISSOR'}</b></p>
                         <p>${configs.ctcEmissorCargo || 'Cargo/Função'}</p>
-                        <p>Matrícula: ${configs.ctcEmissorMatricula || 'N/D'}</p>
+                        <p>${configs.ctcEmissorVinculoLabel || 'Matrícula'}: ${configs.ctcEmissorVinculoValor || 'N/D'}</p>
                     </div>
                     <div class="assinatura-block">
                         <p>_________________________________________</p>
