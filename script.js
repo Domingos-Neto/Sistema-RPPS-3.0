@@ -1006,7 +1006,7 @@ function gerarAtoDeAposentadoria(b) {
     }
 }
 
-// NOVA FUNÇÃO GERAR CTC
+// CORREÇÃO: Função modificada para pegar o número da CTC do novo campo
 async function gerarDocumentoCTC(button) {
     ui.toggleSpinner(button, true);
 
@@ -1015,6 +1015,7 @@ async function gerarDocumentoCTC(button) {
         const configs = AppState.configuracoes || {};
         const dadosServidor = {
             nome: document.getElementById("ctc-nomeServidor").value.toUpperCase() || "________________",
+            numero: document.getElementById("ctc-numero").value || "___",
             rg: document.getElementById("ctc-rg").value.toUpperCase() || "________________",
             sexo: document.getElementById("ctc-sexo").value || "________________",
             filiacao: document.getElementById("ctc-filiacao").value || "________________",
@@ -1165,7 +1166,7 @@ async function gerarDocumentoCTC(button) {
             <div class="container">
                 <div class="header">
                     <h3>INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA</h3>
-                    <h4>CERTIDÃO DE TEMPO DE CONTRIBUIÇÃO N.º ___/${new Date().getFullYear()}</h4>
+                    <h4>CERTIDÃO DE TEMPO DE CONTRIBUIÇÃO N.º ${dadosServidor.numero}/${new Date().getFullYear()}</h4>
                 </div>
                 <div class="info-grid">
                     <div><p><span>Órgão Expedidor:</span> ${configs.ctcOrgao || 'ITAPREV'}</p></div>
@@ -1626,6 +1627,7 @@ function excluirDoHistorico(id) {
     }
 }
 
+// CORREÇÃO: Função modificada para incluir o novo campo 'ctc-numero'
 function salvarCTC() {
     const n = prompt("Nome para salvar esta CTC:");
     if (!n) return;
@@ -1636,6 +1638,7 @@ function salvarCTC() {
         data: new Date().toISOString(),
         dados: {
             nomeServidor: document.getElementById('ctc-nomeServidor').value,
+            numero: document.getElementById('ctc-numero').value,
             matricula: document.getElementById('ctc-matricula').value,
             cpf: document.getElementById('ctc-cpf').value,
             rg: document.getElementById('ctc-rg').value,
@@ -1689,6 +1692,7 @@ function listarCTCsSalvas() {
     }
 }
 
+// CORREÇÃO: Função modificada para carregar o valor do campo 'ctc-numero'
 function carregarCTC(id) {
     if (!AppState.usuarioAtual) return;
     const ch = `ctcs_salvas_${AppState.usuarioAtual.uid}`;
@@ -1699,6 +1703,7 @@ function carregarCTC(id) {
     setTimeout(() => {
         const d = cE.dados;
         document.getElementById('ctc-nomeServidor').value = d.nomeServidor || '';
+        document.getElementById('ctc-numero').value = d.numero || '';
         document.getElementById('ctc-matricula').value = d.matricula || '';
         document.getElementById('ctc-cpf').value = d.cpf || '';
         document.getElementById('ctc-rg').value = d.rg || '';
@@ -1731,6 +1736,7 @@ function excluirCTC(id) {
     atualizarIndicadoresDashboard();
 }
 
+// CORREÇÃO: Função modificada para limpar o novo campo 'ctc-numero'
 function limparFormularioCTC() {
     document.querySelectorAll('#geradorCTC input,#geradorCTC select').forEach(i => i.value = '');
     document.getElementById('corpo-tabela-periodos-ctc').innerHTML = '';
