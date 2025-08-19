@@ -759,7 +759,7 @@ function calcularBeneficio(n = true, b = null) {
 
             if (isA) {
                  const dataCalculo = document.getElementById('dataCalculo').value ? new Date(document.getElementById('dataCalculo').value + 'T00:00:00') : new Date();
-                 const dataAdmissao = new Date(document.getElementById('dataAdmissão').value + 'T00:00:00');
+                 const dataAdmissao = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
                  const tempoServicoPublico = (dataCalculo - dataAdmissao) / 31557600000;
                  const tempoExternoAnos = (parseInt(document.getElementById('tempoExterno').value) || 0) / 365.25;
                  const tempoEspecialAnos = (parseInt(document.getElementById('tempoEspecial').value) || 0) / 365.25;
@@ -2062,3 +2062,4 @@ Object.assign(window, {
     buscarEPreencherFatores,
     adicionarPeriodoExterno, removerPeriodoExterno
 });
+
