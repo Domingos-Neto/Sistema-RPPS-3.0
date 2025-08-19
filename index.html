@@ -428,6 +428,8 @@
                 <div id="telaConfiguracoes" style="display:none;">
                     <h2><i class="ri-settings-3-fill"></i> Configurações do Sistema</h2>
                     <p>Ajuste os parâmetros utilizados na geração de documentos e outras funcionalidades do sistema.</p>
+                    
+                    <h4>Configurações Gerais (Atos)</h4>
                     <div class="form-grid">
                         <label>Nome do Prefeito(a) Municipal:
                             <input type="text" id="config-nome-prefeito" placeholder="Nome completo em maiúsculas">
@@ -435,6 +437,10 @@
                         <label>Nome do(a) Presidente do ITAPREV:
                             <input type="text" id="config-nome-presidente" placeholder="Nome completo em maiúsculas">
                         </label>
+                    </div>
+
+                    <h4>Configurações da CTC</h4>
+                    <div class="form-grid">
                         <label>Órgão Expedidor da CTC (Ex: ITAPREV):
                             <input type="text" id="config-ctc-orgao">
                         </label>
@@ -447,8 +453,11 @@
                         <label>Cargo/Função do Emissor:
                             <input type="text" id="config-ctc-emissor-cargo" placeholder="Ex: Agente Administrativo">
                         </label>
-                        <label>Matrícula/Portaria do Emissor:
-                            <input type="text" id="config-ctc-emissor-matricula">
+                        <label>Rótulo do Vínculo do Emissor (Ex: Matrícula ou Portaria):
+                            <input type="text" id="config-ctc-emissor-vinculo-label" placeholder="Ex: Matrícula">
+                        </label>
+                        <label>Número do Vínculo do Emissor:
+                            <input type="text" id="config-ctc-emissor-vinculo-valor" placeholder="Ex: 001/2025">
                         </label>
                         <label>Cargo do(a) Presidente (Ex: Presidente):
                             <input type="text" id="config-ctc-presidente-cargo">
