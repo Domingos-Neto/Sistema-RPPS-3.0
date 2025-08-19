@@ -185,6 +185,17 @@ function setupEventListeners() {
     const ctcCpfInput = document.getElementById('ctc-cpf');
     if(ctcCpfInput) ctcCpfInput.addEventListener('input', (e) => validaCPF(e.target, document.getElementById('ctc-cpf-status')));
 
+    // Eventos para o modal da Calculadora de Tempo
+    const modal = document.getElementById('time-calc-modal');
+    document.getElementById('btnOpenTimeCalc').addEventListener('click', openTimeCalcModal);
+    document.getElementById('btnCloseTimeCalc').addEventListener('click', closeTimeCalcModal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeTimeCalcModal();
+        }
+    });
+
+    // Eventos para os botões dentro do modal/calculadora
     const btnCalcTempo = document.getElementById('btn-calcular-tempo');
     if (btnCalcTempo) {
         btnCalcTempo.addEventListener('click', calcularTempoEntreDatas);
@@ -194,6 +205,19 @@ function setupEventListeners() {
         btnLimparTempo.addEventListener('click', limparCalculoTempo);
     }
 }
+
+function openTimeCalcModal() {
+    const modal = document.getElementById('time-calc-modal');
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10); // Pequeno delay para a transição funcionar
+}
+
+function closeTimeCalcModal() {
+    const modal = document.getElementById('time-calc-modal');
+    modal.classList.remove('show');
+    setTimeout(() => modal.style.display = 'none', 300); // Espera a transição terminar
+}
+
 
 function handleNavClick(event, targetView) {
     if (event) event.preventDefault();
@@ -2033,7 +2057,7 @@ Object.assign(window, {
     exportarTudoZIP, gerarAtoDeAposentadoria, gerarAtoDePensao, carregarDoHistorico, excluirDoHistorico,
     adicionarLinhaPeriodoCTC, calcularTempoTotalCTC, removerLinhaPeriodoCTC, salvarCTC, gerarDocumentoCTC,
     carregarCTC, excluirCTC, alternarTema,
-    salvarConfiguracoes,
+    salvarConfiguracoes, openTimeCalcModal, closeTimeCalcModal,
     calcularTempoEntreDatas, limparCalculoTempo,
     buscarEPreencherFatores,
     adicionarPeriodoExterno, removerPeriodoExterno
