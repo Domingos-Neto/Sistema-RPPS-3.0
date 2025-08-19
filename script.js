@@ -927,7 +927,7 @@ function gerarAtoDePensao(b) {
             vF = formatarDinheiro(d.valorBeneficio),
             dV = d.dataObito,
             e = `<style>body{font-family:'Times New Roman',Times,serif;color:black;background-color:white;line-height:1.5;font-size:12pt;margin:0;padding:20mm;}.container{width:210mm;min-height:297mm;box-sizing:border-box;}.center{text-align:center;}.bold{font-weight:bold;}.uppercase{text-transform:uppercase;}.justify{text-align:justify;}.indent{text-indent:50px;}p,h3{margin:0;}.header p{margin-bottom:5px;}h3.title{margin-top:40px;border:none;font-weight:bold;}p.considerando{margin-top:50px;}h3.resolve{text-align:center;font-weight:bold;margin-top:40px;margin-bottom:30px;border:none;}p.artigo{margin-top:15px;}p.cumpra-se{text-align:center;margin-top:60px;}p.data-local{text-align:center;margin-top:40px;}.assinatura{text-align:center;margin-top:80px;}@media print{body{padding:0;}}</style>`,
-            cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Pensão Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container"><div class="center header"><p class="bold">PREFEITURA MUNICIPAL DE ITAPIPOCA</p><p class="bold">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV</p><h3 class="title">ATO DE PENSÃO Nº ${d.atoNumero}/${d.atoAno}</h3></div><p class="justify indent considerando">O DIRETOR PRESIDENTE DO INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV, no uso de suas atribuições legais, conferidas pela Lei Orgânica do Município e pela Lei Municipal nº 047/2008, e</p><p class="justify indent">CONSIDERANDO o requerimento formulado pelo(a) interessado(a), que deu origem ao Processo Administrativo nº <span class="bold">${d.processo}</span>,</p><h3 class="resolve">RESOLVE:</h3><p class="justify indent artigo"><b>Art. 1º</b> - CONCEDER o benefício de <b>PENSÃO POR MORTE</b>, ao(à) pensionista <b class="uppercase">${d.nomePensionista}</b>, na qualidade de <b class="uppercase">${d.relacaoPensionista}</b> do(a) ex-servidor(a) ${d.statusServidor}, <b class="uppercase">${d.nomeServidor}</b>, ocupante do cargo de <b class="uppercase">${d.cargoServidor}</b>, CPF nº <b>${d.cpfServidor}</b>, Matrícula nº <b>${d.matriculaServidor}</b>, falecido(a) em <b>${d.dataObito}</b>.</p><p class="justify indent artigo"><b>Art. 2º</b> - O valor do benefício corresponderá à cota familiar de 50% (cinquenta por cento), acrescida de cotas de 10% (dez por cento) por dependente, até o máximo de 100% (cem por cento), aplicada sobre o valor dos proventos do servidor falecido, totalizando <b>${vF}</b> (<span class="bold uppercase">${vE}</span>).</p><p class="justify indent artigo"><b>Art. 3º</b> - A presente pensão tem como fundamento legal o Art. 23 da Emenda Constitucional nº 103/2019 e os Arts. 45 a 52 da Lei Municipal nº 047/2008.</p><p class="justify indent artigo"><b>Art. 4º</b> - Este ato entra em vigor na data de sua publicação, com efeitos financeiros a partir de <b>${dV}</b>, data do óbito do instituidor.</p><p class="cumpra-se">REGISTRE-SE, PUBLIQUE-SE E CUMPRA-SE.</p><p class="data-local">Itapipoca-CE, ${d.dataAtual}.</p><div class="assinatura"><p class="bold uppercase">${d.nomeDiretor}</p><p>Diretor Presidente do ITAPREV</p></div></div></body></html>`;
+            cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Pensão Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container"><div class="center header"><p class="bold">PREFEITURA MUNICIPAL DE ITAPIPOCA</p><p class="bold">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV</p><h3 class="title">ATO DE PENSão Nº ${d.atoNumero}/${d.atoAno}</h3></div><p class="justify indent considerando">O DIRETOR PRESIDENTE DO INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV, no uso de suas atribuições legais, conferidas pela Lei Orgânica do Município e pela Lei Municipal nº 047/2008, e</p><p class="justify indent">CONSIDERANDO o requerimento formulado pelo(a) interessado(a), que deu origem ao Processo Administrativo nº <span class="bold">${d.processo}</span>,</p><h3 class="resolve">RESOLVE:</h3><p class="justify indent artigo"><b>Art. 1º</b> - CONCEDER o benefício de <b>PENSÃO POR MORTE</b>, ao(à) pensionista <b class="uppercase">${d.nomePensionista}</b>, na qualidade de <b class="uppercase">${d.relacaoPensionista}</b> do(a) ex-servidor(a) ${d.statusServidor}, <b class="uppercase">${d.nomeServidor}</b>, ocupante do cargo de <b class="uppercase">${d.cargoServidor}</b>, CPF nº <b>${d.cpfServidor}</b>, Matrícula nº <b>${d.matriculaServidor}</b>, falecido(a) em <b>${d.dataObito}</b>.</p><p class="justify indent artigo"><b>Art. 2º</b> - O valor do benefício corresponderá à cota familiar de 50% (cinquenta por cento), acrescida de cotas de 10% (dez por cento) por dependente, até o máximo de 100% (cem por cento), aplicada sobre o valor dos proventos do servidor falecido, totalizando <b>${vF}</b> (<span class="bold uppercase">${vE}</span>).</p><p class="justify indent artigo"><b>Art. 3º</b> - A presente pensão tem como fundamento legal o Art. 23 da Emenda Constitucional nº 103/2019 e os Arts. 45 a 52 da Lei Municipal nº 047/2008.</p><p class="justify indent artigo"><b>Art. 4º</b> - Este ato entra em vigor na data de sua publicação, com efeitos financeiros a partir de <b>${dV}</b>, data do óbito do instituidor.</p><p class="cumpra-se">REGISTRE-SE, PUBLIQUE-SE E CUMPRA-SE.</p><p class="data-local">Itapipoca-CE, ${d.dataAtual}.</p><div class="assinatura"><p class="bold uppercase">${d.nomeDiretor}</p><p>Diretor Presidente do ITAPREV</p></div></div></body></html>`;
         const nA = window.open();
         nA.document.open();
         nA.document.write(cH);
@@ -1006,7 +1006,7 @@ function gerarAtoDeAposentadoria(b) {
     }
 }
 
-// CORREÇÃO: Função modificada para pegar o número da CTC do novo campo
+// CORREÇÃO: Função modificada para ajustar as colunas da tabela
 async function gerarDocumentoCTC(button) {
     ui.toggleSpinner(button, true);
 
@@ -1090,9 +1090,9 @@ async function gerarDocumentoCTC(button) {
                     <td>${d.periodoStr.replace(/ a /g, ' à ')}</td>
                     <td>${d.regime}</td>
                     <td>${d.tempoApurado}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
                     <td>${d.tempoLiquido}</td>
                 </tr>`).join('');
             
@@ -1101,14 +1101,14 @@ async function gerarDocumentoCTC(button) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Ano</th>
-                            <th>Período</th>
-                            <th>Regime</th>
-                            <th>Tempo Apurado</th>
-                            <th>Faltas</th>
-                            <th>Licenças</th>
-                            <th>Outros</th>
-                            <th>Tempo Líquido</th>
+                            <th style="width: 8%;">Ano</th>
+                            <th style="width: 28%;">Período</th>
+                            <th style="width: 10%;">Regime</th>
+                            <th style="width: 12%;">Tempo Apurado</th>
+                            <th style="width: 8%;">Faltas</th>
+                            <th style="width: 8%;">Licenças</th>
+                            <th style="width: 8%;">Outros</th>
+                            <th style="width: 12%;">Tempo Líquido</th>
                         </tr>
                     </thead>
                     <tbody>${rows}</tbody>
@@ -1627,7 +1627,6 @@ function excluirDoHistorico(id) {
     }
 }
 
-// CORREÇÃO: Função modificada para incluir o novo campo 'ctc-numero'
 function salvarCTC() {
     const n = prompt("Nome para salvar esta CTC:");
     if (!n) return;
@@ -1692,7 +1691,6 @@ function listarCTCsSalvas() {
     }
 }
 
-// CORREÇÃO: Função modificada para carregar o valor do campo 'ctc-numero'
 function carregarCTC(id) {
     if (!AppState.usuarioAtual) return;
     const ch = `ctcs_salvas_${AppState.usuarioAtual.uid}`;
@@ -1736,7 +1734,6 @@ function excluirCTC(id) {
     atualizarIndicadoresDashboard();
 }
 
-// CORREÇÃO: Função modificada para limpar o novo campo 'ctc-numero'
 function limparFormularioCTC() {
     document.querySelectorAll('#geradorCTC input,#geradorCTC select').forEach(i => i.value = '');
     document.getElementById('corpo-tabela-periodos-ctc').innerHTML = '';
