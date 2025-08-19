@@ -951,28 +951,45 @@ function gerarAtoDePensao(b) {
             dataObito: formatarDataBR(document.getElementById('dataObito').value) || '__/__/____',
             valorBeneficio: AppState.simulacaoResultados.valorBeneficioFinal || 0,
             dataAtual: formatarDataPorExtenso(new Date()),
-            nomeDiretor: AppState.configuracoes.nomePresidente || 'PRESIDENTE DO ITAPREV'
+            nomeDiretor: AppState.configuracoes.nomePresidente || 'NOME DO DIRETOR PRESIDENTE'
         };
-        const vE = valorPorExtenso(d.valorBeneficio) + " reais",
+        const vE = valorPorExtenso(d.valorBeneficio) + " REAIS",
             vF = formatarDinheiro(d.valorBeneficio),
             dV = d.dataObito,
             e = `<style>
                 body{font-family:'Times New Roman',Times,serif;color:black;background-color:white;line-height:1.5;font-size:12pt;margin:0;}
-                .container{
-                    width:210mm;
-                    min-height:297mm;
-                    box-sizing:border-box;
-                    /* CÓDIGO DO TIMBRADO ADICIONADO ABAIXO */
-                    background-image: url('https://i.postimg.cc/1tC5TV16/Papel-Timbrado-ITAPREV-1.png');
-                    background-size: 100% 100%;
-                    background-repeat: no-repeat;
-                    -webkit-print-color-adjust: exact; /* Força a impressão da imagem de fundo */
-                    padding: 3cm 2cm 2.5cm 2cm; /* Espaçamento para cabeçalho, rodapé e laterais */
-                }
-                .center{text-align:center;}.bold{font-weight:bold;}.uppercase{text-transform:uppercase;}.justify{text-align:justify;}.indent{text-indent:50px;}p,h3{margin:0;}.header p{margin-bottom:5px;}h3.title{margin-top:40px;border:none;font-weight:bold;}p.considerando{margin-top:50px;}h3.resolve{text-align:center;font-weight:bold;margin-top:40px;margin-bottom:30px;border:none;}p.artigo{margin-top:15px;}p.cumpra-se{text-align:center;margin-top:60px;}p.data-local{text-align:center;margin-top:40px;}.assinatura{text-align:center;margin-top:80px;}
+                .container{display:flex; flex-direction:column; width:210mm;min-height:297mm;box-sizing:border-box; background-image: url('https://i.postimg.cc/1tC5TV16/Papel-Timbrado-ITAPREV-1.png'); background-size: 100% 100%; background-repeat: no-repeat; -webkit-print-color-adjust: exact; padding: 2.5cm 2cm 2cm 2cm;}
+                .content-body {flex-grow: 1;}
+                .center{text-align:center;}.bold{font-weight:bold;}.uppercase{text-transform:uppercase;}.justify{text-align:justify;}.indent{text-indent:50px;}p,h3{margin:0 0 1em 0;}.header p{margin-bottom:5px;}.title{margin-top:2cm;border:none;font-weight:bold;}
+                .resolve{text-align:center;font-weight:bold;margin-top:40px;margin-bottom:30px;border:none;}
+                .artigo{margin-top:15px;} .cumpra-se{text-align:center;margin-top:60px;} .data-local{text-align:center;margin-top:40px;}
+                .assinatura{text-align:center; margin-top:80px;}
+                .footer-text{text-align:center; font-size:9pt; line-height:1.2; margin-top:auto; padding-top:20px;}
                 @media print{body{padding:0;}}
                 </style>`,
-            cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Pensão Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container"><div class="center header"><p class="bold">PREFEITURA MUNICIPAL DE ITAPIPOCA</p><p class="bold">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV</p><h3 class="title">ATO DE PENSão Nº ${d.atoNumero}/${d.atoAno}</h3></div><p class="justify indent considerando">O DIRETOR PRESIDENTE DO INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV, no uso de suas atribuições legais, conferidas pela Lei Orgânica do Município e pela Lei Municipal nº 047/2008, e</p><p class="justify indent">CONSIDERANDO o requerimento formulado pelo(a) interessado(a), que deu origem ao Processo Administrativo nº <span class="bold">${d.processo}</span>,</p><h3 class="resolve">RESOLVE:</h3><p class="justify indent artigo"><b>Art. 1º</b> - CONCEDER o benefício de <b>PENSÃO POR MORTE</b>, ao(à) pensionista <b class="uppercase">${d.nomePensionista}</b>, na qualidade de <b class="uppercase">${d.relacaoPensionista}</b> do(a) ex-servidor(a) ${d.statusServidor}, <b class="uppercase">${d.nomeServidor}</b>, ocupante do cargo de <b class="uppercase">${d.cargoServidor}</b>, CPF nº <b>${d.cpfServidor}</b>, Matrícula nº <b>${d.matriculaServidor}</b>, falecido(a) em <b>${d.dataObito}</b>.</p><p class="justify indent artigo"><b>Art. 2º</b> - O valor do benefício corresponderá à cota familiar de 50% (cinquenta por cento), acrescida de cotas de 10% (dez por cento) por dependente, até o máximo de 100% (cem por cento), aplicada sobre o valor dos proventos do servidor falecido, totalizando <b>${vF}</b> (<span class="bold uppercase">${vE}</span>).</p><p class="justify indent artigo"><b>Art. 3º</b> - A presente pensão tem como fundamento legal o Art. 23 da Emenda Constitucional nº 103/2019 e os Arts. 45 a 52 da Lei Municipal nº 047/2008.</p><p class="justify indent artigo"><b>Art. 4º</b> - Este ato entra em vigor na data de sua publicação, com efeitos financeiros a partir de <b>${dV}</b>, data do óbito do instituidor.</p><p class="cumpra-se">REGISTRE-SE, PUBLIQUE-SE E CUMPRA-SE.</p><p class="data-local">Itapipoca-CE, ${d.dataAtual}.</p><div class="assinatura"><p class="bold uppercase">${d.nomeDiretor}</p><p>Diretor Presidente do ITAPREV</p></div></div></body></html>`;
+            cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Pensão Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container">
+            <div class="content-body">
+                <div class="center header">
+                    <p class="bold">PREFEITURA MUNICIPAL DE ITAPIPOCA</p>
+                    <p class="bold">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV</p>
+                    <h3 class="title">ATO DE PENSÃO Nº ${d.atoNumero}/${d.atoAno}</h3>
+                </div>
+                <p class="justify indent">O DIRETOR PRESIDENTE DO INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA – ITAPREV, no uso de suas atribuições legais, conferidas pela Lei Orgânica do Município e pela Lei Municipal nº 047/2008, e</p>
+                <p class="justify indent">CONSIDERANDO o requerimento formulado pelo(a) interessado(a), que deu origem ao Processo Administrativo nº <span class="bold">${d.processo}</span>,</p>
+                <h3 class="resolve">RESOLVE:</h3>
+                <p class="justify indent artigo"><b>Art. 1º</b> - CONCEDER o benefício de <b>PENSÃO POR MORTE</b>, ao(à) pensionista <b class="uppercase">${d.nomePensionista}</b>, na qualidade de <b class="uppercase">${d.relacaoPensionista}</b> do(a) ex-servidor(a) ${d.statusServidor}, <b class="uppercase">${d.nomeServidor}</b>, ocupante do cargo de <b class="uppercase">${d.cargoServidor}</b>, CPF nº <b>${d.cpfServidor}</b>, Matrícula nº <b>${d.matriculaServidor}</b>, falecido(a) em <b>${d.dataObito}</b>.</p>
+                <p class="justify indent artigo"><b>Art. 2º</b> - O valor do benefício corresponderá à cota familiar de 50% (cinquenta por cento), acrescida de cotas de 10% (dez por cento) por dependente, até o máximo de 100% (cem por cento), aplicada sobre o valor dos proventos do servidor falecido, totalizando <b>${vF}</b> (<span class="bold uppercase">${vE}</span>).</p>
+                <p class="justify indent artigo"><b>Art. 3º</b> - A presente pensão tem como fundamento legal o Art. 23 da Emenda Constitucional nº 103/2019 e os Arts. 45 a 52 da Lei Municipal nº 047/2008.</p>
+                <p class="justify indent artigo"><b>Art. 4º</b> - Este ato entra em vigor na data de sua publicação, com efeitos financeiros a partir de <b>${dV}</b>, data do óbito do instituidor.</p>
+                <p class="cumpra-se">REGISTRE-SE, PUBLIQUE-SE E CUMPRA-SE.</p>
+                <p class="data-local">Itapipoca-CE, ${d.dataAtual}.</p>
+                <div class="assinatura"><p class="bold uppercase">${d.nomeDiretor}</p><p>Diretor Presidente do ITAPREV</p></div>
+            </div>
+            <div class="footer-text">
+                 <p style="margin:0; font-weight:bold;">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA</p>
+                 <p style="margin:0;">(88) 3631-0204</p>
+            </div>
+            </div></body></html>`;
         const nA = window.open();
         nA.document.open();
         nA.document.write(cH);
@@ -992,17 +1009,11 @@ function gerarAtoDeAposentadoria(b) {
         const s = document.getElementById('sexo').value,
             tP = calculateTotalProventos(),
             tB = document.getElementById('tipoBeneficio').value,
-            aD = s === 'F' ? 'A' : 'O',
-            sS = s === 'F' ? 'SERVIDORA' : 'SERVIDOR',
-            aP = s === 'F' ? 'PÚBLICA' : 'PÚBLICO',
-            pP = s === 'F' ? 'portadora' : 'portador',
-            pPo = s === 'F' ? 'da' : 'do',
-            nac = s === 'F' ? 'brasileira' : 'brasileiro',
             d = {
                 atoNumero: document.getElementById('atoNumeroAposentadoria').value.padStart(3, '0') || '___',
                 atoAno: new Date().getFullYear(),
                 nomeServidor: document.getElementById('nomeServidor').value.toUpperCase() || '________________',
-                nacionalidade: nac,
+                nacionalidade: s === 'F' ? 'brasileira' : 'brasileiro',
                 rg: document.getElementById('rgServidor').value || '________________',
                 cpf: document.getElementById('cpfServidor').value || '________________',
                 matricula: document.getElementById('matriculaServidor').value || '________________',
@@ -1013,46 +1024,64 @@ function gerarAtoDeAposentadoria(b) {
                 fundamentoLegal: document.getElementById('fundamentoLegalPersonalizado').value.replace(/\n/g, '<br>') || '________________',
                 dataAtual: formatarDataPorExtenso(document.getElementById('dataCalculo').value || new Date()),
             };
-        let tA = '',
-            pR = '';
-        if (tB === 'voluntaria') {
-            tA = 'ATO CONCESSIVO DE APOSENTADORIA VOLUNTÁRIA';
-            pR = `APOSENTAR VOLUNTARIAMENTE ${aD} ${sS} ${aP} <b class="uppercase">${d.nomeServidor}</b>`;
-        } else if (tB === 'incapacidade') {
-            tA = 'ATO CONCESSIVO DE APOSENTADORIA POR INCAPACIDADE PERMANENTE';
-            const iG = document.getElementById('incapacidadeGrave').value;
-            const tPr = iG === 'sim' ? 'COM PROVENTOS INTEGRAIS' : 'COM PROVENTOS PROPORCIONAIS';
-            pR = `APOSENTAR POR INCAPACIDADE PERMANENTE, ${tPr}, ${aD} ${sS} ${aP} <b class="uppercase">${d.nomeServidor}</b>`;
-        } else if (tB === 'compulsoria') {
-            tA = 'ATO CONCESSIVO DE APOSENTADORIA COMPULSÓRIA';
-            pR = `APOSENTAR COMPULSORIAMENTE, COM PROVENTOS PROPORCIONAIS, ${aD} ${sS} ${aP} <b class="uppercase">${d.nomeServidor}</b>`;
-        }
         
-        const vF = formatarDinheiro(tP),
-            tE = valorPorExtenso(tP);
+        let tipoAtoTexto = '';
+        let tipoAtoResolucao = '';
+        if (tB === 'incapacidade') {
+            const proventos = document.getElementById('incapacidadeGrave').value === 'sim' ? 'COM PROVENTOS INTEGRAIS' : 'COM PROVENTOS PROPORCIONAIS';
+            tipoAtoTexto = `ATO CONCESSIVO DE APOSENTADORIA POR INCAPACIDADE PERMANENTE N.º ${d.atoNumero}/${d.atoAno}.`;
+            tipoAtoResolucao = `APOSENTAR POR INCAPACIDADE PERMANENTE, ${proventos}, A SERVIDORA PÚBLICA`;
+        } else if (tB === 'voluntaria') {
+            tipoAtoTexto = `ATO CONCESSIVO DE APOSENTADORIA VOLUNTÁRIA N.º ${d.atoNumero}/${d.atoAno}.`;
+            tipoAtoResolucao = `APOSENTAR VOLUNTARIAMENTE A SERVIDORA PÚBLICA`;
+        } else { // Compulsória
+            tipoAtoTexto = `ATO CONCESSIVO DE APOSENTADORIA COMPULSÓRIA N.º ${d.atoNumero}/${d.atoAno}.`;
+            tipoAtoResolucao = `APOSENTAR COMPULSORIAMENTE, COM PROVENTOS PROPORCIONAIS, A SERVIDORA PÚBLICA`;
+        }
+
+        const vF = formatarDinheiro(tP);
+        const tE = valorPorExtenso(tP);
         let pHTR = '';
         document.querySelectorAll("#corpo-tabela-proventos-ato tr").forEach(l => {
             const desc = l.querySelector('.provento-descricao').value || '',
                 v = parseFloat(l.querySelector('.provento-valor').value) || 0;
-            if (desc && v > 0) pHTR += `<tr><td>${desc}</td><td>${formatarDinheiro(v)}</td></tr>`;
+            if (desc && v > 0) pHTR += `<tr><td>${desc}</td><td style="text-align:right;">${formatarDinheiro(v)}</td></tr>`;
         });
+        
         const e = `<style>
             body{font-family:'Times New Roman',Times,serif;color:black;background-color:white;line-height:1.5;font-size:12pt;margin:0;}
-            .container{
-                width:210mm;
-                min-height:297mm;
-                box-sizing:border-box;
-                /* CÓDIGO DO TIMBRADO ADICIONADO ABAIXO */
-                background-image: url('https://i.postimg.cc/1tC5TV16/Papel-Timbrado-ITAPREV-1.png');
-                background-size: 100% 100%;
-                background-repeat: no-repeat;
-                -webkit-print-color-adjust: exact; /* Força a impressão da imagem de fundo */
-                padding: 3cm 2cm 2.5cm 2cm; /* Espaçamento para cabeçalho, rodapé e laterais */
-            }
-            .center{text-align:center;}.bold{font-weight:bold;}.uppercase{text-transform:uppercase;}.justify{text-align:justify;}.header{margin-bottom:25px;}h4.title{margin:0;font-weight:bold;}p{margin:1em 0;}.resolve-text{margin-top:25px;}.proventos-table{width:100%;border-collapse:collapse;margin:20px 0;border:1px solid black;}.proventos-table th,.proventos-table td{border:1px solid black;padding:5px;}.proventos-table th{background-color:#e0e0e0;text-align:center;}.proventos-table td:last-child{text-align:right;}.proventos-table tfoot td{font-weight:bold;}.signature-block{margin-top:80px;text-align:center;}.signature-block p{margin:0;line-height:1.2;}
+            .container{display:flex; flex-direction:column; width:210mm; min-height:297mm; box-sizing:border-box; background-image: url('https://i.postimg.cc/1tC5TV16/Papel-Timbrado-ITAPREV-1.png'); background-size: 100% 100%; background-repeat: no-repeat; -webkit-print-color-adjust: exact; padding: 2.5cm 2cm 2cm 2cm;}
+            .content-body {flex-grow: 1;}
+            .center{text-align:center;}.bold{font-weight:bold;}.uppercase{text-transform:uppercase;}.justify{text-align:justify;}p{margin:1em 0;}
+            .header-ato{text-align:center; font-weight:bold; margin-bottom: 3cm;}
+            .proventos-table{width:100%;border-collapse:collapse;margin:20px 0;border:1px solid black;}.proventos-table th,.proventos-table td{border:1px solid black;padding:5px;}.proventos-table th{background-color:#e0e0e0;text-align:center;}.proventos-table tfoot td{font-weight:bold; text-align:right;}
+            .signature-container{display:flex; justify-content:space-around; margin-top:80px; text-align:center;} .signature-block p{margin:0;line-height:1.2;}
+            .footer-text{text-align:center; font-size:9pt; line-height:1.2; margin-top:auto; padding-top:20px;}
             @media print{body{padding:0;}}
             </style>`,
-            cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Aposentadoria Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container"><div class="center header"><h4 class="title uppercase">${tA} N.º ${d.atoNumero}/${d.atoAno}.</h4></div><p class="justify">O PREFEITO MUNICIPAL DE ITAPIPOCA, no uso de suas atribuições legais, que lhe confere a Lei Orgânica do Município de Itapipoca e a Presidente do Instituto de Previdência do Município de Itapipoca – ITAPREV, no uso de suas atribuições conferidas,</p><h4 class="center uppercase">RESOLVEM:</h4><p class="justify resolve-text">${pR}, ${d.nacionalidade}, ${pP} do RG n.º ${d.rg}, inscrit${s==='F'?'a':'o'} no CPF sob o n.º ${d.cpf}, matrícula n.º ${d.matricula}, ${d.cargaHoraria}, ocupante do cargo de <b class="uppercase">${d.cargo}</b>, lotad${s==='F'?'a':'o'} na <b class="uppercase">${d.lotacao}</b>, com admissão no serviço público em ${d.admissao}, ${d.fundamentoLegal}, com início do benefício na data da publicação deste Ato de Aposentadoria, de acordo com o quadro discriminativo abaixo:</p><table class="proventos-table"><thead><tr><th>CÁLCULO DOS PROVENTOS</th><th>VALOR</th></tr></thead><tbody>${pHTR}</tbody><tfoot><tr><td>TOTAL DOS PROVENTOS</td><td>${vF}</td></tr></tfoot></table><p class="justify">Desse modo, os proventos ${pPo} ${sS.toLowerCase()} serão fixados em ${vF} (${tE}).</p><p class="center">Itapipoca – CE, ${d.dataAtual}.</p><div class="signature-block"><p class="uppercase bold">${AppState.configuracoes.nomePrefeito || 'NOME DO PREFEITO(A)'}</p><p>Prefeito Municipal</p></div><div class="signature-block"><p class="uppercase bold">${AppState.configuracoes.nomePresidente || 'NOME DO(A) PRESIDENTE'}</p><p>Presidente do ITAPREV</p></div></div></body></html>`;
+            cH = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ato de Aposentadoria Nº ${d.atoNumero}/${d.atoAno}</title>${e}</head><body><div class="container">
+            <div class="content-body">
+                <div class="header-ato">
+                    <p style="margin:0;">INATO CONCESSIVO DE APOSENTADORIA POR INCAPACIDADE PERMANENTE N.º ${d.atoNumero}/${d.atoAno}.</p>
+                </div>
+                <p class="justify">O PREFEITO MUNICIPAL DE ITAPIPOCA, no uso de suas atribuições legais, que lhe confere a Lei Orgânica do Município de Itapipoca e a Presidente do Instituto de Previdência do Município de Itapipoca- ITAPREV, no uso de suas atribuições conferidas,</p>
+                <h4 class="center uppercase" style="font-size:12pt;">RESOLVEM:</h4>
+                <p class="justify">${tipoAtoResolucao} <b class="uppercase">${d.nomeServidor}</b>, ${d.nacionalidade}, portadora do RG n.º ${d.rg}, inscrita no CPF sob o n.º ${d.cpf}, matrícula n.º ${d.matricula}, ${d.cargaHoraria}, ocupante do cargo de <b class="uppercase">${d.cargo}</b>, lotada na <b class="uppercase">${d.lotacao}</b>, com admissão no serviço público em ${d.admissao}, ${d.fundamentoLegal}, com início do benefício na data da publicação deste Ato de Aposentadoria, de acordo com o quadro discriminativo abaixo:</p>
+                <table class="proventos-table"><thead><tr><th>CÁLCULO DOS PROVENTOS</th><th>VALOR</th></tr></thead><tbody>${pHTR}</tbody><tfoot><tr><td>TOTAL DOS PROVENTOS</td><td>${vF}</td></tr></tfoot></table>
+                <p class="justify">Desse modo, os proventos da servidora serão fixados em ${vF} (${tE}).</p>
+                <p class="center">Itapipoca- CE, ${d.dataAtual}.</p>
+                <div class="signature-container">
+                    <div class="signature-block"><p>${AppState.configuracoes.nomePrefeito || 'NOME DO PREFEITO(A)'}</p><p>Prefeito Municipal</p></div>
+                    <div class="signature-block"><p>${AppState.configuracoes.nomePresidente || 'NOME DO(A) PRESIDENTE'}</p><p>Presidente do ITAPREV</p></div>
+                </div>
+            </div>
+            <div class="footer-text">
+                <p style="margin:0; font-weight:bold;">INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA</p>
+                <p style="margin:0;">Rua Caio Prado, 730, São Sebastião-Itapipoca-CE-Brasil</p>
+                <p style="margin:0;">CEP: 62508-200-CNPJ: 10575544/0001-35</p>
+                <p style="margin:0;">(88) 3631-0204 | rppsitaprev@gmail.com | www.itaprev.com.br</p>
+            </div>
+            </div></body></html>`;
         const nA = window.open();
         nA.document.open();
         nA.document.write(cH);
@@ -1065,11 +1094,11 @@ function gerarAtoDeAposentadoria(b) {
         ui.toggleSpinner(b, false);
     }
 }
+
 async function gerarDocumentoCTC(button) {
     ui.toggleSpinner(button, true);
 
     try {
-        // 1. Coletar todos os dados dos formulários e configurações
         const configs = AppState.configuracoes || {};
         const dadosServidor = {
             nome: document.getElementById("ctc-nomeServidor").value.toUpperCase() || "________________",
@@ -1096,197 +1125,105 @@ async function gerarDocumentoCTC(button) {
             fonte: tr.querySelector('.ctc-fonte').value,
         }));
         
-        // 2. Processar os períodos para o formato anual
         const periodosProcessados = { RGPS: [], RPPS: [] };
         let totalLiquidoRGPS = 0;
         let totalLiquidoRPPS = 0;
 
         for (const periodo of periodosInput) {
             if (!periodo.inicio || !periodo.fim) continue;
-
             let dataCorrente = new Date(periodo.inicio + 'T00:00:00');
             const dataFinal = new Date(periodo.fim + 'T00:00:00');
-
             while (dataCorrente <= dataFinal) {
                 const ano = dataCorrente.getFullYear();
                 const inicioAno = new Date(ano, 0, 1);
                 const fimAno = new Date(ano, 11, 31);
-
                 const periodoInicio = dataCorrente > inicioAno ? dataCorrente : inicioAno;
                 const periodoFim = dataFinal < fimAno ? dataFinal : fimAno;
-
                 const diffTime = periodoFim.getTime() - periodoInicio.getTime();
                 const tempoBruto = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                
                 const deducaoNesteAno = (periodoFim.getFullYear() === dataFinal.getFullYear()) ? periodo.deducoes : 0;
                 const tempoLiquido = tempoBruto - deducaoNesteAno;
-
-                const linhaProcessada = {
-                    ano: ano,
-                    periodoStr: `${periodoInicio.toLocaleDateString('pt-BR')} a ${periodoFim.toLocaleDateString('pt-BR')}`,
-                    regime: periodo.regime,
-                    tempoApurado: tempoBruto,
-                    deducoes: deducaoNesteAno,
-                    tempoLiquido: tempoLiquido,
-                    fonte: periodo.fonte
-                };
-
+                const linhaProcessada = { ano: ano, periodoStr: `${periodoInicio.toLocaleDateString('pt-BR')} a ${periodoFim.toLocaleDateString('pt-BR')}`, regime: periodo.regime, tempoApurado: tempoBruto, deducoes: deducaoNesteAno, tempoLiquido: tempoLiquido, fonte: periodo.fonte };
                 periodosProcessados[periodo.regime].push(linhaProcessada);
-                if(periodo.regime === 'RGPS') totalLiquidoRGPS += tempoLiquido;
-                else totalLiquidoRPPS += tempoLiquido;
-                
+                if(periodo.regime === 'RGPS') totalLiquidoRGPS += tempoLiquido; else totalLiquidoRPPS += tempoLiquido;
                 dataCorrente = new Date(ano + 1, 0, 1);
             }
         }
         
-        // 3. Montar as tabelas HTML
         const criarTabelaHTML = (titulo, dados, subtotal) => {
             if (dados.length === 0) return '';
-            let rows = dados.map(d => `
-                <tr>
-                    <td>${d.ano}</td>
-                    <td>${d.periodoStr.replace(/ a /g, ' à ')}</td>
-                    <td>${d.regime}</td>
-                    <td>${d.tempoApurado}</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>${d.tempoLiquido}</td>
-                </tr>`).join('');
-            
-            return `
-                <h4 class="table-title">${titulo}</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 8%;">Ano</th>
-                            <th style="width: 32%;">Período</th>
-                            <th style="width: 10%;">Regime</th>
-                            <th style="width: 12%;">Tempo Apurado</th>
-                            <th style="width: 6%;">Faltas</th>
-                            <th style="width: 6%;">Licenças</th>
-                            <th style="width: 6%;">Outros</th>
-                            <th style="width: 12%;">Tempo Líquido</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="7" class="subtotal-label">SUBTOTAL</td>
-                            <td class="subtotal-value">${subtotal}</td>
-                        </tr>
-                    </tfoot>
-                </table>`;
+            let rows = dados.map(d => `<tr><td>${d.ano}</td><td>${d.periodoStr.replace(/ a /g, ' à ')}</td><td>${d.regime}</td><td>${d.tempoApurado}</td><td>-</td><td>-</td><td>-</td><td>${d.tempoLiquido}</td></tr>`).join('');
+            return `<h4 class="table-title">${titulo}</h4><table><thead><tr><th style="width: 8%;">Ano</th><th style="width: 32%;">Período</th><th style="width: 10%;">Regime</th><th style="width: 12%;">Tempo Apurado</th><th style="width: 6%;">Faltas</th><th style="width: 6%;">Licenças</th><th style="width: 6%;">Outros</th><th style="width: 12%;">Tempo Líquido</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="7" class="subtotal-label">SUBTOTAL</td><td class="subtotal-value">${subtotal}</td></tr></tfoot></table>`;
         };
         const tabelaRGPS_HTML = criarTabelaHTML('REGIME GERAL DE PREVIDÊNCIA SOCIAL', periodosProcessados.RGPS, totalLiquidoRGPS);
         const tabelaRPPS_HTML = criarTabelaHTML('REGIME PRÓPRIO DE PREVIDÊNCIA SOCIAL', periodosProcessados.RPPS, totalLiquidoRPPS);
-        const primeiroPeriodoRGPS = periodosProcessados.RGPS[0];
-        const ultimoPeriodoRGPS = periodosProcessados.RGPS[periodosProcessados.RGPS.length - 1];
-        const primeiroPeriodoRPPS = periodosProcessados.RPPS[0];
-        const ultimoPeriodoRPPS = periodosProcessados.RPPS[periodosProcessados.RPPS.length - 1];
         
-        // 4. Calcular totais e formatar textos
+        let periodoCompletoRGPS = '';
+        if (periodosProcessados.RGPS.length > 0) {
+            const primeiroPeriodoRGPS = periodosProcessados.RGPS[0].periodoStr.split(' a ')[0];
+            const ultimoPeriodoRGPS = periodosProcessados.RGPS[periodosProcessados.RGPS.length - 1].periodoStr.split(' a ')[1];
+            periodoCompletoRGPS = `<p>RGPS - ${primeiroPeriodoRGPS} à ${ultimoPeriodoRGPS} - MUNICÍPIO DE ITAPIPOCA, AVERBADO CONFORME DISCRIMINADO ABAIXO;</p>`;
+        }
+        let periodoCompletoRPPS = '';
+        if (periodosProcessados.RPPS.length > 0) {
+            const primeiroPeriodoRPPS = periodosProcessados.RPPS[0].periodoStr.split(' a ')[0];
+            const ultimoPeriodoRPPS = periodosProcessados.RPPS[periodosProcessados.RPPS.length - 1].periodoStr.split(' a ')[1];
+            periodoCompletoRPPS = `<p>RPPS - ${primeiroPeriodoRPPS} à ${ultimoPeriodoRPPS} - MUNICÍPIO DE ITAPIPOCA, CONFORME DISCRIMINADO ABAIXO.</p>`;
+        }
+
         const totalGeralDias = totalLiquidoRGPS + totalLiquidoRPPS;
         const { anos, meses, dias } = diasParaAnosMesesDias(totalGeralDias);
         const totalExtenso = `${anos} anos, ${meses} meses e ${dias} dias`;
         const dataEmissao = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
         
-        // 5. Gerar o HTML final do documento
         const htmlFinal = `
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-            <meta charset="UTF-8">
-            <title>CTC - ${dadosServidor.nome}</title>
+        <!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>CTC - ${dadosServidor.nome}</title>
             <style>
                 body { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4; color: #000; background: #fff; margin:0; }
-                .container {
-                    width: 210mm;
-                    min-height: 297mm;
-                    box-sizing: border-box;
-                    margin: auto;
-                    /* CÓDIGO DO TIMBRADO ADICIONADO ABAIXO */
-                    background-image: url('https://i.postimg.cc/1tC5TV16/Papel-Timbrado-ITAPREV-1.png');
-                    background-size: 100% 100%;
-                    background-repeat: no-repeat;
-                    -webkit-print-color-adjust: exact; /* Força a impressão da imagem de fundo */
-                    padding: 3cm 2cm 2.5cm 2cm; /* Espaçamento para cabeçalho, rodapé e laterais */
-                    border: none;
-                }
-                .header { text-align: center; font-weight: bold; }
-                .header h3 { margin: 0; font-size: 13pt; }
-                .header h4 { margin: 15px 0; font-size: 11pt; }
+                .container {display:flex; flex-direction:column; width: 210mm; min-height: 297mm; box-sizing: border-box; margin:auto; background-image: url('https://i.postimg.cc/1tC5TV16/Papel-Timbrado-ITAPREV-1.png'); background-size: 100% 100%; background-repeat: no-repeat; -webkit-print-color-adjust: exact; padding: 2.5cm 2cm 2cm 2cm; border: none;}
+                .content-body {flex-grow: 1;}
+                .header { text-align: center; font-weight: bold; } .header h4 { margin: 25px 0; font-size: 11pt; }
                 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 15px; margin: 15px 0; font-size: 9.5pt; }
-                .info-grid p { margin: 0; }
-                .info-grid span { font-weight: bold; }
+                .info-grid p { margin: 0; } .info-grid span { font-weight: bold; }
                 .periodo-summary p { margin: 2px 0; font-size: 9.5pt; }
                 .table-title { margin-top: 20px; font-weight: bold; text-align: center; font-size: 10pt;}
                 table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 15px;}
-                th, td { border: 1px solid #000; padding: 3px; text-align: center; }
-                th { font-weight: bold; }
-                .subtotal-label { text-align: right; font-weight: bold; }
-                .subtotal-value { font-weight: bold; }
-                .certifico { margin-top: 25px; text-align: justify; }
-                .data-local { text-align: center; margin-top: 40px; }
+                th, td { border: 1px solid #000; padding: 3px; text-align: center; } th { font-weight: bold; }
+                .subtotal-label { text-align: right; font-weight: bold; } .subtotal-value { font-weight: bold; }
+                .certifico { margin-top: 25px; text-align: justify; } .data-local { text-align: center; margin-top: 40px; }
                 .assinaturas { margin-top: 70px; display: flex; justify-content: space-around; text-align: center; }
                 .assinatura-block p { margin: 0; font-size: 9pt; }
+                .footer-text{text-align:center; font-size:9pt; line-height:1.2; margin-top:auto; padding-top:20px;}
             </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h3>INSTITUTO DE PREVIDÊNCIA DOS SERVIDORES MUNICIPAIS DE ITAPIPOCA</h3>
-                    <h4>CERTIDÃO DE TEMPO DE CONTRIBUIÇÃO N.º ${dadosServidor.numero}/${new Date().getFullYear()}</h4>
-                </div>
+        </head><body><div class="container">
+            <div class="content-body">
+                <div class="header"><h4>CERTIDÃO DE TEMPO DE CONTRIBUIÇÃO N.º ${dadosServidor.numero}/${new Date().getFullYear()}</h4></div>
                 <div class="info-grid">
-                    <div><p><span>Órgão Expedidor:</span> ${configs.ctcOrgao || 'ITAPREV'}</p></div>
-                    <div><p><span>CNPJ:</span> ${dadosServidor.cnpj}</p></div>
+                    <div><p><span>Órgão Expedidor:</span> ${configs.ctcOrgao || 'ITAPREV'}</p></div><div><p><span>CNPJ:</span> ${dadosServidor.cnpj}</p></div>
                     <div style="grid-column: 1 / -1;"><p><span>Nome do(a) Servidor(a):</span> ${dadosServidor.nome}</p></div>
-                    <div><p><span>CPF:</span> ${dadosServidor.cpf}</p></div>
-                    <div><p><span>RG/Órgão Expedidor:</span> ${dadosServidor.rg}</p></div>
-                    <div><p><span>Data de Nascimento:</span> ${formatarDataBR(dadosServidor.dataNascimento)}</p></div>
-                    <div><p><span>Sexo:</span> ${dadosServidor.sexo}</p></div>
-                    <div><p><span>PIS/PASEP:</span> ${dadosServidor.pis_pasep}</p></div>
-                    <div><p><span>Matrícula:</span> ${dadosServidor.matricula}</p></div>
+                    <div><p><span>CPF:</span> ${dadosServidor.cpf}</p></div><div><p><span>RG/Órgão Expedidor:</span> ${dadosServidor.rg}</p></div>
+                    <div><p><span>Data de Nascimento:</span> ${formatarDataBR(dadosServidor.dataNascimento)}</p></div><div><p><span>Sexo:</span> ${dadosServidor.sexo}</p></div>
+                    <div><p><span>PIS/PASEP:</span> ${dadosServidor.pis_pasep}</p></div><div><p><span>Matrícula:</span> ${dadosServidor.matricula}</p></div>
                     <div style="grid-column: 1 / -1;"><p><span>Filiação:</span> ${dadosServidor.filiacao}</p></div>
-                    <div><p><span>Cargo Efetivo:</span> ${dadosServidor.cargo}</p></div>
-                    <div><p><span>Órgão Lotação:</span> ${dadosServidor.lotacao}</p></div>
-                    <div><p><span>Data de Admissão:</span> ${formatarDataBR(dadosServidor.dataAdmissao)}</p></div>
-                    <div><p><span>Data de Requerimento:</span> ${formatarDataBR(dadosServidor.dataRequerimento)}</p></div>
+                    <div><p><span>Cargo Efetivo:</span> ${dadosServidor.cargo}</p></div><div><p><span>Órgão Lotação:</span> ${dadosServidor.lotacao}</p></div>
+                    <div><p><span>Data de Admissão:</span> ${formatarDataBR(dadosServidor.dataAdmissao)}</p></div><div><p><span>Data de Requerimento:</span> ${formatarDataBR(dadosServidor.dataRequerimento)}</p></div>
                 </div>
-                <div class="periodo-summary">
-                    <p><b>PERÍODOS DE CONTRIBUIÇÃO COMPREENDIDOS NESTA CERTIDÃO:</b></p>
-                    ${tabelaRGPS_HTML ? `<p>RGPS - ${primeiroPeriodoRGPS.periodoStr.split(' a ')[0]} à ${ultimoPeriodoRGPS.periodoStr.split(' a ')[1]} - MUNICÍPIO DE ITAPIPOCA, AVERBADO CONFORME DISCRIMINADO ABAIXO;</p>` : ''}
-                    ${tabelaRPPS_HTML ? `<p>RPPS - ${primeiroPeriodoRPPS.periodoStr.split(' a ')[0]} à ${ultimoPeriodoRPPS.periodoStr.split(' a ')[1]} - MUNICÍPIO DE ITAPIPOCA, CONFORME DISCRIMINADO ABAIXO.</p>` : ''}
-                </div>
-                
-                ${tabelaRGPS_HTML}
-                ${tabelaRPPS_HTML}
-
+                <div class="periodo-summary"><p><b>PERÍODOS DE CONTRIBUIÇÃO COMPREENDIDOS NESTA CERTIDÃO:</b></p>${periodoCompletoRGPS}${periodoCompletoRPPS}</div>
+                ${tabelaRGPS_HTML}${tabelaRPPS_HTML}
                 <div class="certifico">
                     <p>CERTIFICO, em face do apurado, que o(a) interessado(a) conta, de efetivo exercício público no município, <b>${totalGeralDias} dias</b>, correspondentes a <b>${totalExtenso}</b>.</p>
                     <p>CERTIFICO, que a Lei nº: 047/2008 assegura aos servidores do Município de ITAPIPOCA-CE, Aposentadorias e Pensão, com aproveitamento de tempo de contribuição para outro Regime, na forma de contagem recíproca.</p>
                 </div>
-                
                 <p class="data-local">Itapipoca-CE, ${dataEmissao}.</p>
-
                 <div class="assinaturas">
-                    <div class="assinatura-block">
-                        <p>_________________________________________</p>
-                        <p><b>${configs.ctcEmissorNome || 'NOME DO EMISSOR'}</b></p>
-                        <p>${configs.ctcEmissorCargo || 'Cargo/Função'}</p>
-                        <p>${configs.ctcEmissorVinculoLabel || 'Matrícula'}: ${configs.ctcEmissorVinculoValor || 'N/D'}</p>
-                    </div>
-                    <div class="assinatura-block">
-                        <p>_________________________________________</p>
-                        <p><b>${configs.nomePresidente || 'NOME DO PRESIDENTE'}</b></p>
-                        <p>${configs.ctcPresidenteCargo || 'Presidente'}</p>
-                        <p>Portaria: ${configs.ctcPresidentePortaria || 'Nº 000/0000'}</p>
-                    </div>
+                    <div class="assinatura-block"><p><b>${configs.ctcEmissorNome || 'NOME DO COORDENADOR'}</b></p><p>Coordenador Previdenciário</p><p>Portaria: ${configs.ctcEmissorVinculoValor || 'Nº 000/0000'}</p></div>
+                    <div class="assinatura-block"><p><b>${configs.nomePresidente || 'NOME DO PRESIDENTE'}</b></p><p>PRESIDENTE</p><p>Portaria: ${configs.ctcPresidentePortaria || 'Nº 000/0000'}</p></div>
                 </div>
             </div>
-        </body>
-        </html>`;
+            <div class="footer-text">
+                 <p style="margin:0;">(88) 3631-0204 | rppsitaprev@gmail.com | www.itaprev.com.br</p>
+            </div>
+            </div></body></html>`;
 
         const newWindow = window.open();
         newWindow.document.open();
@@ -2102,6 +2039,7 @@ Object.assign(window, {
     buscarEPreencherFatores,
     adicionarPeriodoExterno, removerPeriodoExterno
 });
+
 
 
 
