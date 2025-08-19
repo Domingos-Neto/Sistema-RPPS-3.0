@@ -395,12 +395,16 @@ body.dark-mode .topbar button:hover {
 /* ============================================= */
 /* FORMULÁRIOS E INPUTS                          */
 /* ============================================= */
-/* CORREÇÃO 1: Removido o 'align-items: start' */
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+/* CORREÇÃO: Adicionado 'align-items: start' para garantir alinhamento vertical */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
 input,select, textarea{width:100%;box-sizing:border-box}
 
-/* CORREÇÃO 2: Adicionado 'justify-content: space-between' */
-label{margin-bottom:0;font-size:14px;color:var(--cor-texto);display:flex;flex-direction:column;justify-content: space-between;}
+label{margin-bottom:0;font-size:14px;color:var(--cor-texto);display:flex;flex-direction:column;}
 input[type="date"],input[type="text"],input[type="number"],input[type="password"],select,textarea{padding:10px;margin-top:5px;border:1px solid var(--cor-borda);border-radius:6px; font-family:'Inter',sans-serif; background-color: var(--cor-superficie); color: var(--cor-texto);}
 input:focus, select:focus, textarea:focus { border-color: var(--prevtech-laranja); box-shadow: 0 0 0 3px rgba(255, 111, 0, 0.15); outline: none; }
 textarea { resize: vertical; min-height: 100px; }
