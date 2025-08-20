@@ -146,6 +146,155 @@ const ui = {
     }
 };
 
+// =================================================================================
+// MÓDULO DE INTEGRAÇÃO COM GOOGLE DRIVE (ADICIONADO AQUI)
+// =================================================================================
+const drive = {
+    gapiLoaded: false,
+    autenticado: false,
+    appFolderId: null,
+
+    // ⚠️ IMPORTANTE: Substitua a string abaixo pelo ID de cliente que você gerou no Google Cloud Console.
+    CLIENT_ID: "847747677288-110jhcfcltfonvte86ji4mhokug8dgp2.apps.googleusercontent.com",
+    
+    // A API Key que já está no seu firebaseConfig
+    API_KEY: firebaseConfig.apiKey,
+
+    // Escopo de permissão: Permite criar arquivos, mas só consegue ver/modificar os arquivos que ele mesmo criou.
+    // É mais seguro que o escopo 'drive' completo.
+    SCOPES: "https://www.googleapis.com/auth/drive.file",
+
+    // Inicia o cliente da API do Google
+    init: () => {
+        window.gapi.load('client:auth2', async () => {
+            try {
+                await window.gapi.client.init({
+                    apiKey: drive.API_KEY,
+                    clientId: drive.CLIENT_ID,
+                    scope: drive.SCOPES,
+                    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+                });
+                drive.gapiLoaded = true;
+                
+                // Verifica se o usuário já está logado e autorizado
+                const authInstance = window.gapi.auth2.getAuthInstance();
+                if (authInstance.isSignedIn.get()) {
+                    drive.autenticado = true;
+                    console.log("Usuário já autenticado com o Google Drive.");
+                }
+            } catch (error) {
+                console.error("Erro ao inicializar GAPI client:", error);
+                ui.showToast("Não foi possível conectar ao Google Drive.", false);
+            }
+        });
+    },
+
+    // Solicita o login e a permissão do usuário para o Drive
+    signIn: async () => {
+        if (!drive.gapiLoaded) {
+            ui.showToast("A API do Google Drive ainda não carregou.", false);
+            return false;
+        }
+        try {
+            await window.gapi.auth2.getAuthInstance().signIn();
+            drive.autenticado = true;
+            ui.showToast("Acesso ao Google Drive autorizado!", true);
+            return true;
+        } catch (error) {
+            console.error("Erro ao autenticar com Google Drive:", error);
+            ui.showToast("Falha ao autorizar o acesso ao Google Drive.", false);
+            return false;
+        }
+    },
+
+    // Procura pela pasta "PrevTech" no Drive do usuário ou a cria se não existir
+    findOrCreateAppFolder: async () => {
+        if (drive.appFolderId) return drive.appFolderId;
+
+        try {
+            // Procura pela pasta
+            const response = await window.gapi.client.drive.files.list({
+                q: "mimeType='application/vnd.google-apps.folder' and name='PrevTech' and trashed=false",
+                fields: 'files(id, name)',
+            });
+
+            if (response.result.files.length > 0) {
+                drive.appFolderId = response.result.files[0].id;
+                return drive.appFolderId;
+            } else {
+                // Cria a pasta se não encontrar
+                const fileMetadata = {
+                    'name': 'PrevTech',
+                    'mimeType': 'application/vnd.google-apps.folder'
+                };
+                const createResponse = await window.gapi.client.drive.files.create({
+                    resource: fileMetadata,
+                    fields: 'id'
+                });
+                drive.appFolderId = createResponse.result.id;
+                return drive.appFolderId;
+            }
+        } catch (error) {
+            console.error("Erro ao buscar/criar pasta no Drive:", error);
+            ui.showToast("Erro ao gerenciar pasta no Drive.", false);
+            return null;
+        }
+    },
+
+    // Função principal para fazer o upload de um arquivo
+    uploadFile: async (fileName, fileContent, mimeType) => {
+        if (!drive.autenticado) {
+            const success = await drive.signIn();
+            if (!success) return;
+        }
+
+        const folderId = await drive.findOrCreateAppFolder();
+        if (!folderId) return;
+
+        const metadata = {
+            'name': fileName,
+            'parents': [folderId],
+            'mimeType': mimeType,
+        };
+
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        const multipartRequestBody =
+            delimiter +
+            'Content-Type: application/json\r\n\r\n' +
+            JSON.stringify(metadata) +
+            delimiter +
+            'Content-Type: ' + mimeType + '\r\n\r\n' +
+            fileContent +
+            close_delim;
+
+        try {
+            await window.gapi.client.request({
+                'path': '/upload/drive/v3/files',
+                'method': 'POST',
+                'params': {'uploadType': 'multipart'},
+                'headers': { 'Content-Type': 'multipart/related; boundary="' + boundary + '"' },
+                'body': multipartRequestBody
+            });
+            ui.showToast(`Arquivo "${fileName}" salvo no Google Drive!`, true);
+        } catch(error) {
+            console.error("Erro ao fazer upload do arquivo:", error);
+            ui.showToast("Falha ao salvar o arquivo no Drive.", false);
+        }
+    },
+
+    // Função chamada pelo clique do botão para salvar a simulação
+    handleSaveSimulationClick: async () => {
+        const nomeSimulacao = document.getElementById("nomeSimulacao").value.trim() || `Simulacao_${new Date().toISOString()}`;
+        const dados = coletarDadosSimulacao();
+        const conteudoJson = JSON.stringify(dados, null, 2); // O '2' formata o JSON para ser legível
+
+        await drive.uploadFile(`${nomeSimulacao}.json`, conteudoJson, 'application/json');
+    },
+};
+
 const EXPECTATIVA_SOBREVIDA_IBGE = { M: { 55: 25.5, 56: 24.7, 57: 23.9, 58: 23.1, 59: 22.3, 60: 21.6, 61: 20.8, 62: 20.1, 63: 19.4, 64: 18.7, 65: 18.0 }, F: { 52: 30.1, 53: 29.2, 54: 28.4, 55: 27.5, 56: 26.7, 57: 25.8, 58: 25.0, 59: 24.1, 60: 23.3, 61: 22.5, 62: 21.7 } };
 
 document.addEventListener("DOMContentLoaded", auth.init);
@@ -165,6 +314,9 @@ function initSistemaPosLogin() {
         document.querySelector("#toggleTheme i").className = 'ri-sun-line';
     }
     handleNavClick(null, 'dashboard');
+
+    // INICIALIZAÇÃO DO MÓDULO DO DRIVE (MODIFICADO AQUI)
+    setTimeout(() => drive.init(), 1000); // Um pequeno delay para garantir que o GAPI esteja pronto
 }
 
 function setupEventListeners() {
@@ -2013,7 +2165,7 @@ function atualizarTotalTempoExterno() {
 }
 
 Object.assign(window, {
-    auth, ui, handleNavClick, atualizarDashboardView, irParaPasso, alternarCamposBeneficio,
+    auth, ui, drive, handleNavClick, atualizarDashboardView, irParaPasso, alternarCamposBeneficio,
     adicionarLinha, limparTabela, exportarExcel, importarExcel, atualizarSalarioLinha, excluirLinha,
     calcularBeneficio, adicionarLinhaProvento, calculateTotalProventos, excluirLinhaProvento,
     adicionarLinhaDependente, removerLinhaDependente, salvarSimulacaoHistorico, imprimirSimulacao,
@@ -2025,9 +2177,3 @@ Object.assign(window, {
     buscarEPreencherFatores,
     adicionarPeriodoExterno, removerPeriodoExterno
 });
-
-
-
-
-
-
