@@ -259,7 +259,7 @@
                             </div>
                             <div class="grupo-acoes">
                                 <button class="secondary" onclick="imprimirSimulacao()">🖨️ Imprimir Relatório</button>
-                                <button class="secondary" onclick="drive.handleSaveSimulationClick()">
+                                <button id="btnSaveToDrive" class="secondary" onclick="drive.handleSaveSimulationClick()" disabled title="Aguardando conexão com o Google Drive...">
                                     <i class="ri-upload-cloud-2-line"></i> Salvar Simulação no Drive
                                 </button>
                                 <button class="primary" onclick="exportarTudoZIP(this)">📦 Exportar ZIP</button>
@@ -539,4 +539,5 @@
 
 </body>
 </html>
+
 
