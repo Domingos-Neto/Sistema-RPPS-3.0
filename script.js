@@ -147,7 +147,7 @@ const ui = {
 };
 
 // =================================================================================
-// MÓDULO DE INTEGRAÇÃO COM GOOGLE DRIVE (ADICIONADO AQUI)
+// MÓDULO DE INTEGRAÇÃO COM GOOGLE DRIVE
 // =================================================================================
 const drive = {
     gapiLoaded: false,
@@ -157,36 +157,30 @@ const drive = {
     // ⚠️ IMPORTANTE: Substitua a string abaixo pelo ID de cliente que você gerou no Google Cloud Console.
     CLIENT_ID: "847747677288-110jhcfcltfonvte86ji4mhokug8dgp2.apps.googleusercontent.com",
     
-    // A API Key que já está no seu firebaseConfig
     API_KEY: firebaseConfig.apiKey,
-
-    // Escopo de permissão: Permite criar arquivos, mas só consegue ver/modificar os arquivos que ele mesmo criou.
-    // É mais seguro que o escopo 'drive' completo.
     SCOPES: "https://www.googleapis.com/auth/drive.file",
 
-    // Inicia o cliente da API do Google
-    init: () => {
-        window.gapi.load('client:auth2', async () => {
-            try {
-                await window.gapi.client.init({
-                    apiKey: drive.API_KEY,
-                    clientId: drive.CLIENT_ID,
-                    scope: drive.SCOPES,
-                    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-                });
-                drive.gapiLoaded = true;
-                
-                // Verifica se o usuário já está logado e autorizado
-                const authInstance = window.gapi.auth2.getAuthInstance();
-                if (authInstance.isSignedIn.get()) {
-                    drive.autenticado = true;
-                    console.log("Usuário já autenticado com o Google Drive.");
-                }
-            } catch (error) {
-                console.error("Erro ao inicializar GAPI client:", error);
-                ui.showToast("Não foi possível conectar ao Google Drive.", false);
+    // Inicia o cliente da API do Google. Esta função é o CALLBACK do gapi.load
+    init: async () => {
+        try {
+            await window.gapi.client.init({
+                apiKey: drive.API_KEY,
+                clientId: drive.CLIENT_ID,
+                scope: drive.SCOPES,
+                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+            });
+            drive.gapiLoaded = true;
+            console.log("Google Drive API Client inicializado.");
+            
+            const authInstance = window.gapi.auth2.getAuthInstance();
+            if (authInstance.isSignedIn.get()) {
+                drive.autenticado = true;
+                console.log("Usuário já autenticado com o Google Drive.");
             }
-        });
+        } catch (error) {
+            console.error("Erro ao inicializar GAPI client:", error);
+            ui.showToast("Não foi possível conectar ao Google Drive.", false);
+        }
     },
 
     // Solicita o login e a permissão do usuário para o Drive
@@ -212,7 +206,6 @@ const drive = {
         if (drive.appFolderId) return drive.appFolderId;
 
         try {
-            // Procura pela pasta
             const response = await window.gapi.client.drive.files.list({
                 q: "mimeType='application/vnd.google-apps.folder' and name='PrevTech' and trashed=false",
                 fields: 'files(id, name)',
@@ -222,7 +215,6 @@ const drive = {
                 drive.appFolderId = response.result.files[0].id;
                 return drive.appFolderId;
             } else {
-                // Cria a pasta se não encontrar
                 const fileMetadata = {
                     'name': 'PrevTech',
                     'mimeType': 'application/vnd.google-apps.folder'
@@ -287,17 +279,28 @@ const drive = {
 
     // Função chamada pelo clique do botão para salvar a simulação
     handleSaveSimulationClick: async () => {
+        if (!drive.gapiLoaded) {
+             ui.showToast("A API do Google Drive ainda está carregando. Tente novamente em alguns segundos.", false);
+             return;
+        }
         const nomeSimulacao = document.getElementById("nomeSimulacao").value.trim() || `Simulacao_${new Date().toISOString()}`;
         const dados = coletarDadosSimulacao();
-        const conteudoJson = JSON.stringify(dados, null, 2); // O '2' formata o JSON para ser legível
+        const conteudoJson = JSON.stringify(dados, null, 2); 
 
         await drive.uploadFile(`${nomeSimulacao}.json`, conteudoJson, 'application/json');
     },
 };
 
+
 const EXPECTATIVA_SOBREVIDA_IBGE = { M: { 55: 25.5, 56: 24.7, 57: 23.9, 58: 23.1, 59: 22.3, 60: 21.6, 61: 20.8, 62: 20.1, 63: 19.4, 64: 18.7, 65: 18.0 }, F: { 52: 30.1, 53: 29.2, 54: 28.4, 55: 27.5, 56: 26.7, 57: 25.8, 58: 25.0, 59: 24.1, 60: 23.3, 61: 22.5, 62: 21.7 } };
 
 document.addEventListener("DOMContentLoaded", auth.init);
+
+// NOVA FUNÇÃO GLOBAL - Chamada pelo script da API do Google quando ele termina de carregar
+function onGapiLoad() {
+    // Carrega os módulos 'client' e 'auth2' e, quando prontos, chama a função 'drive.init'
+    window.gapi.load('client:auth2', drive.init);
+}
 
 function initSistemaPosLogin() {
     ui.updateUserInfo();
@@ -315,8 +318,7 @@ function initSistemaPosLogin() {
     }
     handleNavClick(null, 'dashboard');
 
-    // INICIALIZAÇÃO DO MÓDULO DO DRIVE (MODIFICADO AQUI)
-    setTimeout(() => drive.init(), 1000); // Um pequeno delay para garantir que o GAPI esteja pronto
+    // O setTimeout foi REMOVIDO daqui. A inicialização agora é feita pelo callback onGapiLoad.
 }
 
 function setupEventListeners() {
@@ -361,13 +363,13 @@ function setupEventListeners() {
 function openTimeCalcModal() {
     const modal = document.getElementById('time-calc-modal');
     modal.style.display = 'flex';
-    setTimeout(() => modal.classList.add('show'), 10); // Pequeno delay para a transição funcionar
+    setTimeout(() => modal.classList.add('show'), 10);
 }
 
 function closeTimeCalcModal() {
     const modal = document.getElementById('time-calc-modal');
     modal.classList.remove('show');
-    setTimeout(() => modal.style.display = 'none', 300); // Espera a transição terminar
+    setTimeout(() => modal.style.display = 'none', 300);
 }
 
 
@@ -507,18 +509,10 @@ function atualizarDashboardView() {
 
 function formatarDinheiro(valor) { return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 
-// =================================================================================
-// FUNÇÕES DE DATA CORRIGIDAS
-// =================================================================================
-/**
- * Formata uma string de data (YYYY-MM-DD) para o formato brasileiro (DD/MM/YYYY).
- * Trata a data como local para evitar erros de fuso horário.
- */
 function formatarDataBR(dataString) {
     if (!dataString || !dataString.includes('-')) return "";
     try {
         const [year, month, day] = dataString.split('-');
-        // Constrói a data com componentes para garantir que seja tratada como local
         const date = new Date(year, month - 1, day);
         return date.toLocaleDateString('pt-BR');
     } catch (e) {
@@ -526,24 +520,17 @@ function formatarDataBR(dataString) {
     }
 }
 
-/**
- * Formata uma data (string YYYY-MM-DD ou objeto Date) por extenso em português.
- * Garante que a data seja tratada como local para evitar erros de fuso horário.
- */
 function formatarDataPorExtenso(data) {
     if (!data) return '';
     
     let dateObj;
-    // Se a data for uma string do tipo "YYYY-MM-DD", converte para um objeto Date local
     if (typeof data === 'string' && data.includes('-')) {
         const [year, month, day] = data.split('-');
         dateObj = new Date(year, month - 1, day);
     } else {
-        // Se já for um objeto Date ou outro formato, tenta converter diretamente
         dateObj = new Date(data);
     }
     
-    // Verifica se a data é válida antes de formatar
     if (isNaN(dateObj.getTime())) {
         return '';
     }
@@ -554,7 +541,6 @@ function formatarDataPorExtenso(data) {
         year: 'numeric'
     });
 }
-// =================================================================================
 
 function atualizarDataHora() {
     const container = document.getElementById('datetime-container');
@@ -737,7 +723,6 @@ function limparFormularioCompleto() {
     document.getElementById("tempoEspecial").value = "0";
     document.getElementById("tempoContribuicaoEfetivoDias").value = "0";
     
-    // Limpar tabela de tempo externo
     document.getElementById('corpo-tabela-tempo-externo').innerHTML = '';
     atualizarTotalTempoExterno();
 
@@ -859,33 +844,17 @@ function calcularMediaSalarial() {
     return { media: med, salarios: sM };
 }
 
-// =================================================================================
-// CÓDIGO NOVO: FUNÇÃO PARA CALCULAR MÉDIA DOS 80% MAIORES SALÁRIOS (REGRA ANTIGA)
-// =================================================================================
 function calcularMedia80Maiores(salarios) {
     if (!salarios || salarios.length === 0) {
         return 0;
     }
-
-    // Extrai apenas os valores dos salários e os ordena do maior para o menor
     const valoresOrdenados = salarios.map(s => s.value).sort((a, b) => b - a);
-    
-    // Calcula quantos salários correspondem a 80% do total
     const quantidade80p = Math.ceil(valoresOrdenados.length * 0.8);
-    
-    // Pega apenas os 80% maiores salários
     const maioresSalarios = valoresOrdenados.slice(0, quantidade80p);
-    
-    // Calcula a média aritmética simples desses salários
     const somaMaioresSalarios = maioresSalarios.reduce((acc, val) => acc + val, 0);
-    
     return somaMaioresSalarios / maioresSalarios.length;
 }
 
-
-// =================================================================================
-// CÓDIGO MODIFICADO: FUNÇÃO DE CÁLCULO DE BENEFÍCIO
-// =================================================================================
 function calcularBeneficio(n = true, b = null) {
     const t = document.getElementById('tipoBeneficio').value;
     if ((t === 'voluntaria' || t === 'incapacidade' || t === 'compulsoria') && (!document.getElementById('dataNascimento').value || !document.getElementById('dataAdmissao').value)) {
@@ -1026,11 +995,6 @@ function calcularBeneficio(n = true, b = null) {
     }, 50);
 }
 
-
-// =================================================================================
-// FUNÇÕES DE GESTÃO DE CONFIGURAÇÕES
-// =================================================================================
-
 function carregarConfiguracoes() {
     const configsSalvas = localStorage.getItem('itaprevConfiguracoes');
     if (configsSalvas) {
@@ -1081,10 +1045,6 @@ function salvarConfiguracoes(button) {
         ui.toggleSpinner(button, false);
     }
 }
-
-// =================================================================================
-// FUNÇÕES DE GERAÇÃO DE DOCUMENTOS (ATUALIZADAS)
-// =================================================================================
 
 function gerarAtoDePensao(b) {
     ui.toggleSpinner(b, true);
@@ -1445,14 +1405,11 @@ function projetarAposentadoria(mS) {
 
     const dR = new Date('2019-11-13T00:00:00');
     
-    // Cálculos de tempo e idade
     const iA = (dataReferencia - dN) / 31557600000;
     const tempoServicoPublicoAnos = (dataReferencia - dA) / 31557600000;
     const tempoExternoAnos = tED / 365.25;
     const tempoEspecialAnos = tSD / 365.25;
-    
     const tCT = tempoServicoPublicoAnos + tempoExternoAnos + tempoEspecialAnos;
-    
     const tempoServicoPublicoNaReformaAnos = (dR - dA) / 31557600000;
     const tCR = tempoServicoPublicoNaReformaAnos + tempoExternoAnos + tempoEspecialAnos;
 
@@ -1550,7 +1507,7 @@ function verificarAbonoPermanencia() {
     const dA = new Date(document.getElementById('dataAdmissao').value + 'T00:00:00');
     const s = document.getElementById('sexo').value;
 
-    const dataReferencia = new Date(); // Abono é sempre verificado na data atual
+    const dataReferencia = new Date();
     
     const i = (dataReferencia - dN) / 31557600000;
     const tC = (dataReferencia - dA) / 31557600000 + (parseInt(document.getElementById('tempoExterno').value) || 0) / 365.25 + (parseInt(document.getElementById('tempoEspecial').value) || 0) / 365.25;
@@ -1683,7 +1640,6 @@ function coletarDadosSimulacao() {
     document.querySelectorAll("#corpo-tabela-proventos-ato tr").forEach(l => d.proventosAto.push({ descricao: l.querySelector(".provento-descricao").value, valor: l.querySelector(".provento-valor").value }));
     document.querySelectorAll("#corpo-tabela-dependentes tr").forEach(l => d.dependentes.push({ nome: l.querySelector('.dependente-nome').value, dataNasc: l.querySelector('.dependente-dataNasc').value, parentesco: l.querySelector('.dependente-parentesco').value, invalido: l.querySelector('.dependente-invalido').value }));
     
-    // Coletar períodos externos
     document.querySelectorAll("#corpo-tabela-tempo-externo tr").forEach(row => {
         d.periodosExternos.push({
             inicio: row.dataset.inicio,
@@ -1726,7 +1682,7 @@ function carregarDoHistorico(id) {
     const d = rE.dados;
     handleNavClick(null, 'simulacao');
     setTimeout(() => {
-        limparFormularioCompleto(); // Limpa o formulário antes de carregar
+        limparFormularioCompleto();
         for (const k in d.passo1) {
             const e = document.getElementById(k);
             if (e) e.value = d.passo1[k];
@@ -1742,7 +1698,6 @@ function carregarDoHistorico(id) {
             d.dependentes.forEach(dep => adicionarLinhaDependente(dep.nome, dep.dataNasc, dep.parentesco, dep.invalido));
         }
         
-        // Carregar períodos externos
         if(d.periodosExternos) {
             d.periodosExternos.forEach(p => adicionarPeriodoExterno(p.inicio, p.fim));
         }
@@ -1907,12 +1862,10 @@ function adicionarLinhaPeriodoCTC(i = '', f = '', regime = 'RGPS', d = '0', fo =
     calcularTempoTotalCTC();
 }
 
-
 function removerLinhaPeriodoCTC(b) {
     b.closest('tr').remove();
     calcularTempoTotalCTC();
 }
-
 
 function calcularTempoTotalCTC() {
     let tD = 0;
@@ -2105,9 +2058,6 @@ async function buscarEPreencherFatores(button) {
     }
 }
 
-// =================================================================================
-// INÍCIO DAS NOVAS FUNÇÕES - MÓDULO DE TEMPO EXTERNO
-// =================================================================================
 function adicionarPeriodoExterno(inicio = '', fim = '') {
     const dataInicioInput = document.getElementById('te-data-inicio');
     const dataFimInput = document.getElementById('te-data-fim');
@@ -2141,7 +2091,6 @@ function adicionarPeriodoExterno(inicio = '', fim = '') {
         <td><button class="danger btn-tabela" onclick="removerPeriodoExterno(this)">Excluir</button></td>
     `;
     
-    // Limpa os campos de data e atualiza o total
     dataInicioInput.value = '';
     dataFimInput.value = '';
     atualizarTotalTempoExterno();
@@ -2165,7 +2114,7 @@ function atualizarTotalTempoExterno() {
 }
 
 Object.assign(window, {
-    auth, ui, drive, handleNavClick, atualizarDashboardView, irParaPasso, alternarCamposBeneficio,
+    auth, ui, drive, onGapiLoad, handleNavClick, atualizarDashboardView, irParaPasso, alternarCamposBeneficio,
     adicionarLinha, limparTabela, exportarExcel, importarExcel, atualizarSalarioLinha, excluirLinha,
     calcularBeneficio, adicionarLinhaProvento, calculateTotalProventos, excluirLinhaProvento,
     adicionarLinhaDependente, removerLinhaDependente, salvarSimulacaoHistorico, imprimirSimulacao,
