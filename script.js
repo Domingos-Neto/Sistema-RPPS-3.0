@@ -155,13 +155,14 @@ const drive = {
     appFolderId: null,
 
     // ⚠️ IMPORTANTE: Substitua a string abaixo pelo ID de cliente que você gerou no Google Cloud Console.
-    CLIENT_ID: "847747677288-110jhcfcltfonvte86ji4mhokug8dgp2.apps.googleusercontent.com",
+    CLIENT_ID: "SEU_ID_DE_CLIENTE_OAUTH_VAI_AQUI.apps.googleusercontent.com",
     
     API_KEY: firebaseConfig.apiKey,
     SCOPES: "https://www.googleapis.com/auth/drive.file",
 
     // Inicia o cliente da API do Google. Esta função é o CALLBACK do gapi.load
     init: async () => {
+        const saveButton = document.getElementById('btnSaveToDrive');
         try {
             await window.gapi.client.init({
                 apiKey: drive.API_KEY,
@@ -177,16 +178,28 @@ const drive = {
                 drive.autenticado = true;
                 console.log("Usuário já autenticado com o Google Drive.");
             }
+
+            // MODIFICADO AQUI: Ativa o botão quando a API estiver pronta
+            if (saveButton) {
+                saveButton.disabled = false;
+                saveButton.title = "Salvar simulação no Google Drive";
+            }
+
         } catch (error) {
             console.error("Erro ao inicializar GAPI client:", error);
             ui.showToast("Não foi possível conectar ao Google Drive.", false);
+
+            // MODIFICADO AQUI: Mantém o botão desativado e informa o erro
+            if (saveButton) {
+                saveButton.title = "Falha ao conectar com o Google Drive. Verifique o console para erros.";
+            }
         }
     },
 
     // Solicita o login e a permissão do usuário para o Drive
     signIn: async () => {
         if (!drive.gapiLoaded) {
-            ui.showToast("A API do Google Drive ainda não carregou.", false);
+            ui.showToast("A API do Google Drive ainda está carregando. Tente novamente em alguns segundos.", false);
             return false;
         }
         try {
@@ -279,10 +292,6 @@ const drive = {
 
     // Função chamada pelo clique do botão para salvar a simulação
     handleSaveSimulationClick: async () => {
-        if (!drive.gapiLoaded) {
-             ui.showToast("A API do Google Drive ainda está carregando. Tente novamente em alguns segundos.", false);
-             return;
-        }
         const nomeSimulacao = document.getElementById("nomeSimulacao").value.trim() || `Simulacao_${new Date().toISOString()}`;
         const dados = coletarDadosSimulacao();
         const conteudoJson = JSON.stringify(dados, null, 2); 
@@ -291,14 +300,11 @@ const drive = {
     },
 };
 
-
 const EXPECTATIVA_SOBREVIDA_IBGE = { M: { 55: 25.5, 56: 24.7, 57: 23.9, 58: 23.1, 59: 22.3, 60: 21.6, 61: 20.8, 62: 20.1, 63: 19.4, 64: 18.7, 65: 18.0 }, F: { 52: 30.1, 53: 29.2, 54: 28.4, 55: 27.5, 56: 26.7, 57: 25.8, 58: 25.0, 59: 24.1, 60: 23.3, 61: 22.5, 62: 21.7 } };
 
 document.addEventListener("DOMContentLoaded", auth.init);
 
-// NOVA FUNÇÃO GLOBAL - Chamada pelo script da API do Google quando ele termina de carregar
 function onGapiLoad() {
-    // Carrega os módulos 'client' e 'auth2' e, quando prontos, chama a função 'drive.init'
     window.gapi.load('client:auth2', drive.init);
 }
 
@@ -317,8 +323,6 @@ function initSistemaPosLogin() {
         document.querySelector("#toggleTheme i").className = 'ri-sun-line';
     }
     handleNavClick(null, 'dashboard');
-
-    // O setTimeout foi REMOVIDO daqui. A inicialização agora é feita pelo callback onGapiLoad.
 }
 
 function setupEventListeners() {
@@ -2126,3 +2130,4 @@ Object.assign(window, {
     buscarEPreencherFatores,
     adicionarPeriodoExterno, removerPeriodoExterno
 });
+
